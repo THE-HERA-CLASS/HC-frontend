@@ -13,12 +13,12 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Main />} />
-        <Route path='/' element={<Logins />} />
-        <Route path='/' element={<Signup />} />
-        <Route path='/' element={<AdminPage />} />
-        <Route path='/' element={<UserMyPage />} />
-        <Route path='/' element={<TestPage />} />
-        <Route path='/' element={<SearchResultPage />} />
+        <Route path='/logins' element={<Logins />} />
+        <Route path='/signups' element={<Signup />} />
+        <Route path='/adminpages' element={<AdminPage />} />
+        <Route path='/usermypages' element={<UserMyPage />} />
+        <Route path='/testpages' element={<TestPage />} />
+        <Route path='/searchresultpage' element={<SearchResultPage />} />
       </Routes>
     </BrowserRouter>
   );
