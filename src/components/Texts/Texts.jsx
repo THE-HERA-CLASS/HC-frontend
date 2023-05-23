@@ -17,3 +17,6 @@ const QuestionText = () => {
 const OptionsText = () => {
   return <div></div>;
 };
+const NoticeText = () => {
+  return <div></div>;
+};
