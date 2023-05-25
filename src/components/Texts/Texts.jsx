@@ -1,4 +1,4 @@
-//카테로기 텍스트
+//카테고리 텍스트
 const CategoriesText = () => {
   return <div></div>;
 };
@@ -17,6 +17,7 @@ const QuestionText = () => {
 const OptionsText = () => {
   return <div></div>;
 };
+// 문제 보기 지시문
 const NoticeText = () => {
   return <div></div>;
 };
