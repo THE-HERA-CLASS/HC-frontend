@@ -8,7 +8,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use((confige) => {
   confige.headers = {};
-
+  confige.headers['Content-Type'] = 'application/json';
   // 로그인 여부 확인
   let isLogin = false;
 
@@ -37,8 +37,9 @@ instance.interceptors.request.use((confige) => {
 });
 
 instance.interceptors.response.use((respones) => {
+  // 응답에 토큰이 있다면 토큰 저장
   try {
-    console.log(`interceptor response => ${respones}`);
+    // console.log(`interceptor response => ${respones}`);
 
     const res = respones.data;
 
