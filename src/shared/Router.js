@@ -16,7 +16,7 @@ function Router() {
         <Route path='/logins' element={<Logins />} />
         <Route path='/signups' element={<Signup />} />
         <Route path='/adminpages' element={<AdminPage />} />
-        <Route path='/usermypages' element={<UserMyPage />} />
+        <Route path='/usermypages/:user_id' element={<UserMyPage />} />
         <Route path='/testpages' element={<TestPage />} />
         <Route path='/searchresultpage' element={<SearchResultPage />} />
       </Routes>
