@@ -1,18 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { useQuery } from 'react-query';
-import { majorGet } from '../api/users';
+import { useMutation, useQuery } from 'react-query';
+import { majorGet, signupPost } from '../api/users';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
+  const navigate = useNavigate();
   //전공 불러오기
   const { data } = useQuery('major', majorGet);
-
-  // 인풋 관리
-  // const [userInput, setUserInput] = useState({
-  //   email: '',
-  //   nickname: '',
-  //   password: '',
-  //   major_id: 0,
-  // });
 
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
@@ -30,14 +24,10 @@ function Signup() {
   const [isPassword, setIsPassword] = useState(false);
   const [isMajor, setIsMajor] = useState(false);
 
-  // 인풋 이벤트 헨들러
-  // const userInputChangeHandler = (e) => {
-  //   const { name, value } = e.target;
-  //   setUserInput({
-  //     ...userInput,
-  //     [name]: value,
-  //   });
-  // };
+  // 회원가입 후 로그인 페이지로 이동 하기 위한 함수
+  const goLogin = () => {
+    navigate('/logins');
+  };
 
   // 이메일 이벤트 핸들러
   const onChangeEmailHandler = (e) => {
@@ -96,6 +86,11 @@ function Signup() {
     }
   };
 
+  const signupMutation = useMutation(signupPost, {
+    onSuccess: () => {
+      goLogin();
+    },
+  });
   const submitHandler = (e) => {
     e.preventDefault();
     const newUser = {
@@ -104,8 +99,10 @@ function Signup() {
       password,
       major_id,
     };
-    console.log(newUser);
+    signupMutation.mutate(newUser);
   };
+
+  // 임시 데이터입니다
   const Options = [
     { major_id: '1', name: '포크레인' },
     { major_id: '2', name: '굴삭기' },
