@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { majorGet, signupPost } from '../api/users';
 import { useNavigate } from 'react-router-dom';
