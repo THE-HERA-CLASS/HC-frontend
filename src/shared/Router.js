@@ -7,7 +7,7 @@ import AdminPage from '../pages/AdminPage';
 import UserMyPage from '../pages/UserMyPage';
 import TestPage from '../pages/TestPage';
 import SearchResultPage from '../pages/SearchResultPage';
-import Header from '../components/layout/Header';
+import Header from '../components/layout/Header/Header';
 
 function Router() {
   return (
