@@ -2,18 +2,30 @@ import React from 'react';
 import { styled } from 'styled-components';
 import CustomText from '../../common/CustomText';
 import CustomBtn from '../../common/CustomBtn';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
+
+  const goHome = () => {
+    navigate('/');
+  };
   return (
     <Container>
       <Title>
-        <CustomText fontSize='32px' fontWeight='600' fontFamily='Inter' color=' #1A202C' cursor='pointer'>
+        <CustomText
+          fontSize='32px'
+          fontWeight='600'
+          fontFamily='Inter'
+          color=' #1A202C'
+          cursor='pointer'
+          onClick={goHome}>
           Hera Class
         </CustomText>
       </Title>
       <MenuWrap>
-        <CustomText fontSize='17px' fontWeight='600' fontFamily='Roboto' color='#1A202C' cursor='pointer'>
-          Home
+        <CustomText fontSize='15px' fontWeight='600' fontFamily='Roboto' color='#1A202C' cursor='pointer'>
+          홈
         </CustomText>
         <CustomText fontSize='15px' fontWeight='600' fontFamily='Plus Jakarta Sans' color='#1A202C' cursor='pointer'>
           기출문제
