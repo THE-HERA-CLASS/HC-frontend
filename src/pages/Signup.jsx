@@ -8,20 +8,24 @@ function Signup() {
   //전공 불러오기
   const { data } = useQuery('major', majorGet);
 
+  //input 상태 저장
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
   const [major_id, setMajor_id] = useState('');
 
   //오류메세지 상태저장
   const [emailMsg, setEmailMsg] = useState('');
   const [nicknameMsg, setNicknameMsg] = useState('');
   const [passwordMsg, setPasswordMsg] = useState('');
+  const [confirmPwMsg, setConfirmPwMsg] = useState('');
 
   //유효성검사
   const [isEmail, setIsEmail] = useState(false);
   const [isNickname, setIsNickname] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+  const [isConfirmPw, setIsConfirmPw] = useState(false);
   const [isMajor, setIsMajor] = useState(false);
 
   // 회원가입 후 로그인 페이지로 이동 하기 위한 함수
@@ -71,6 +75,20 @@ function Signup() {
     } else {
       setPasswordMsg('올바른 비밀번호 형식입니다.');
       setIsPassword(true);
+    }
+  };
+
+  const onChangeConfirmPwHandler = (e) => {
+    const confirmPwCurrent = e.target.value;
+    const passwordCurrent = password;
+    setConfirmPw(confirmPwCurrent);
+
+    if (confirmPwCurrent !== passwordCurrent) {
+      setConfirmPwMsg('비밀번호가 틀립니다. 다시 확인해주세요.');
+      setIsConfirmPw(false);
+    } else {
+      setConfirmPwMsg('비밀번호와 일치합니다.');
+      setIsConfirmPw(true);
     }
   };
 
@@ -129,6 +147,14 @@ function Signup() {
         placeholder='비밀번호'
       />
       {password.length > 0 && <span>{passwordMsg}</span>}
+      <input
+        name='confirmPw'
+        onChange={onChangeConfirmPwHandler}
+        value={confirmPw}
+        type='password'
+        placeholder='비밀번호 재확인'
+      />
+      {confirmPw.length > 0 && <span>{confirmPwMsg}</span>}
       <select name='major_id' value={major_id} onChange={onChangeMajorHandler}>
         <option value=''>===전공 선택===</option>
         {Options?.map((major) => {
@@ -140,7 +166,7 @@ function Signup() {
         })}
       </select>
       {major_id === '' && <span>전공을 선택해주세요</span>}
-      <button type='submit' disabled={!(isEmail && isNickname && isPassword && isMajor)}>
+      <button type='submit' disabled={!(isEmail && isNickname && isPassword && isMajor && isConfirmPw)}>
         회원가입
       </button>
     </form>

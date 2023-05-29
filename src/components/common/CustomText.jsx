@@ -30,7 +30,7 @@ function CustomText(props) {
   );
 }
 
-const TextStyled = styled.text`
+const TextStyled = styled.div`
   cursor: ${({ cursor }) => `${cursor}`};
   font-size: ${({ fontSize }) => `${fontSize}`};
   font-weight: ${({ fontWeight }) => `${fontWeight}`};
