@@ -9,7 +9,7 @@ function CustomBtn(props) {
   //linewidth: 선의 굵기입니다.
   //color: 글씨 색입니다.
   //상위 폴더의 버튼 props에 linewidth가 없다면 외각선이 보이지 않습니다.
-  const { children, bc, width, height, outlinecolor, linewidth, onClick, margin, shadow, type, position, left, top } =
+  const { children, bc, width, height, border, onClick, margin, shadow, type, position, left, top, borderRadius } =
     props;
 
   return (
@@ -18,10 +18,10 @@ function CustomBtn(props) {
       bc={bc}
       width={width}
       height={height}
-      outlinecolor={outlinecolor}
-      linewidth={linewidth}
+      border={border}
       shadow={shadow}
       onClick={onClick}
+      borderRadius={borderRadius}
       type={type}
       position={position}
       left={left}
@@ -34,16 +34,16 @@ const ButtonStyled = styled.button`
   margin: ${({ margin }) => `${margin}`};
   width: ${({ width }) => `${width}`};
   height: ${({ height }) => `${height}`};
-  border-radius: 4px;
+  border-radius: ${({ borderRadius }) => `${borderRadius}`};
   background-color: ${({ bc }) => `${bc}`};
   box-shadow: ${({ shadow }) => `${shadow}`};
   top: ${({ top }) => `${top}`};
   left: ${({ left }) => `${left}`};
   position: ${({ position }) => `${position}`};
-  ${({ outlinecolor, linewidth }) =>
-    linewidth
+  ${({ border }) =>
+    border
       ? css`
-          border: ${linewidth} solid ${outlinecolor};
+          border: ${border};
         `
       : css`
           border: none;
