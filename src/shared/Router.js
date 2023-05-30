@@ -7,10 +7,13 @@ import AdminPage from '../pages/AdminPage';
 import UserMyPage from '../pages/UserMyPage';
 import TestPage from '../pages/TestPage';
 import SearchResultPage from '../pages/SearchResultPage';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
 function Router() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path='/' element={<Main />} />
         <Route path='/logins' element={<Logins />} />
@@ -20,6 +23,7 @@ function Router() {
         <Route path='/testpages' element={<TestPage />} />
         <Route path='/searchresultpage' element={<SearchResultPage />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
