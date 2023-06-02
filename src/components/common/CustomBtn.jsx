@@ -9,8 +9,7 @@ function CustomBtn(props) {
   //_borderradius: 보더 모서리 설정입니다.
   //color: 글씨 색입니다.
   //상위 폴더의 버튼 props에 linewidth가 없다면 외각선이 보이지 않습니다.
-  const { children, bc, width, height, border, onClick, margin, shadow, type, position, left, top, _borderradius } =
-    props;
+  const { children, bc, width, height, border, onClick, margin, shadow, type, position, _borderradius } = props;
 
   return (
     <ButtonStyled
@@ -23,9 +22,7 @@ function CustomBtn(props) {
       onClick={onClick}
       _borderradius={_borderradius}
       type={type}
-      position={position}
-      left={left}
-      top={top}>
+      position={position}>
       {children}
     </ButtonStyled>
   );
@@ -37,8 +34,6 @@ const ButtonStyled = styled.button`
   border-radius: ${({ _borderradius }) => `${_borderradius}`};
   background-color: ${({ bc }) => `${bc}`};
   box-shadow: ${({ shadow }) => `${shadow}`};
-  top: ${({ top }) => `${top}`};
-  left: ${({ left }) => `${left}`};
   position: ${({ position }) => `${position}`};
   ${({ border }) =>
     border

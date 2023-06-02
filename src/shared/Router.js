@@ -30,7 +30,9 @@ function Router() {
 
 function FooterConditionalRender() {
   const location = useLocation();
-  return location.pathname !== '/adminpages' ? <Footer /> : null;
+  return location.pathname !== '/adminpages' && location.pathname !== '/logins' && location.pathname !== '/signups' ? (
+    <Footer />
+  ) : null;
 }
 
 export default Router;
