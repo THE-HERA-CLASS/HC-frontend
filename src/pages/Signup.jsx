@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { majorGet, signupPost } from '../api/users';
+import { signupPost } from '../api/users';
 import { useNavigate } from 'react-router-dom';
+import { majorGet } from '../api/certificate';
 
 function Signup() {
   const navigate = useNavigate();
@@ -156,7 +157,9 @@ function Signup() {
       />
       {confirmPw.length > 0 && <span>{confirmPwMsg}</span>}
       <select name='major_id' value={major_id} onChange={onChangeMajorHandler}>
-        <option value=''>===전공 선택===</option>
+        <option value='' selected disabled hidden>
+          ===전공 선택===
+        </option>
         {Options?.map((major) => {
           return (
             <option key={major.major_id} value={major.major_id}>
