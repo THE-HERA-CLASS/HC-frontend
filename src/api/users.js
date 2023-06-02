@@ -35,14 +35,4 @@ const signupPost = async (newUser) => {
   }
 };
 
-// 회원가입에서 전공 불러오는 api
-const majorGet = async () => {
-  try {
-    const response = await api.get(`/api/major`);
-    return response.data;
-  } catch (e) {
-    // console.log(e.response.errMsg);
-  }
-};
-
-export { loginPost, signupPost, majorGet };
+export { loginPost, signupPost };

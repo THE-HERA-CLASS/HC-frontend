@@ -1,5 +1,7 @@
 import { styled } from 'styled-components';
 
 export const Layout = styled.div`
-  margin: 0px 360px;
+  max-width: 1200px;
+  min-width: 700px;
+  margin: auto;
 `;

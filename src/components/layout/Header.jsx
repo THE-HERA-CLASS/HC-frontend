@@ -76,7 +76,7 @@ function Header() {
           onClick={goSignup}>
           회원가입
         </CustomText>
-        <CustomBtn width='82px' height='38px' bc=' #486284' borderRadius='4px'>
+        <CustomBtn width='82px' height='38px' bc=' #486284' _borderradius='4px'>
           <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogins}>
             로그인
           </CustomText>
