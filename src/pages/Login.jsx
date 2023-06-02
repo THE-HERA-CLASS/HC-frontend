@@ -12,6 +12,9 @@ function Login() {
   const goHome = () => {
     navigate('/');
   };
+  const goSignup = () => {
+    navigate('/signups');
+  };
 
   //로그인 인풋 관리
   const [userInput, setUserInput] = useState({
@@ -66,10 +69,20 @@ function Login() {
           />
 
           <FindIdBox>
-            <CustomText fontSize='0.95rem' fontWeight='500' color=' #486284' textDecoration='underline'>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              cursor='pointer'>
               아이디 찾기
             </CustomText>
-            <CustomText fontSize='0.95rem' fontWeight='500' color=' #486284' textDecoration='underline'>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              cursor='pointer'>
               비밀번호 찾기
             </CustomText>
           </FindIdBox>
@@ -80,14 +93,20 @@ function Login() {
             </CustomText>
           </CustomBtn>
 
-          <GoSingupBox>
+          <GoSignupBox>
             <CustomText fontSize='0.95rem' fontWeight='500' color=' #486284'>
               아직 회원이 아니신가요?
             </CustomText>
-            <CustomText fontSize='1.2rem' fontWeight='500' color=' #486284' textDecoration='underline'>
+            <CustomText
+              fontSize='1.2rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              onClick={goSignup}
+              cursor='pointer'>
               회원가입
             </CustomText>
-          </GoSingupBox>
+          </GoSignupBox>
         </LoginCard>
       </LoginLayout>
     </form>
@@ -159,7 +178,7 @@ const FindIdBox = styled.div`
   gap: 24px;
 `;
 
-const GoSingupBox = styled.div`
+const GoSignupBox = styled.div`
   width: 384px;
 
   margin-top: 13px;
