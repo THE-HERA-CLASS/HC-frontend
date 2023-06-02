@@ -4,12 +4,16 @@ import { loginPost } from '../api/users';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import CustomText from '../components/common/CustomText';
+import CustomBtn from '../components/common/CustomBtn';
 function Login() {
   // 로그인 성공 시 홈으로 보내기
   const navigate = useNavigate();
 
   const goHome = () => {
     navigate('/');
+  };
+  const goSignup = () => {
+    navigate('/signups');
   };
 
   //로그인 인풋 관리
@@ -42,9 +46,10 @@ function Login() {
     <form onSubmit={submitHandler}>
       <LoginLayout>
         <LoginCard>
-          <CustomText fontSize='2rem' fontWeight='700' color='#486284'>
+          <CustomText margin='0 0 49px 0' fontSize='2rem' fontWeight='700' color='#486284'>
             로그인
           </CustomText>
+
           <LoginInput
             type='text'
             name='email'
@@ -53,6 +58,7 @@ function Login() {
             placeholder='아이디'
             required
           />
+
           <LoginInput
             type='password'
             name='password'
@@ -61,7 +67,46 @@ function Login() {
             placeholder='비밀번호'
             required
           />
-          <button type='submit'>로그인</button>
+
+          <FindIdBox>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              cursor='pointer'>
+              아이디 찾기
+            </CustomText>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              cursor='pointer'>
+              비밀번호 찾기
+            </CustomText>
+          </FindIdBox>
+
+          <CustomBtn type='submit' width='384px' height='66px' _borderradius='10px' bc='#486284'>
+            <CustomText fontSize='1.5rem' fontWeight='700' color='#fff'>
+              Login
+            </CustomText>
+          </CustomBtn>
+
+          <GoSignupBox>
+            <CustomText fontSize='0.95rem' fontWeight='500' color=' #486284'>
+              아직 회원이 아니신가요?
+            </CustomText>
+            <CustomText
+              fontSize='1.2rem'
+              fontWeight='500'
+              color=' #486284'
+              textDecoration='underline'
+              onClick={goSignup}
+              cursor='pointer'>
+              회원가입
+            </CustomText>
+          </GoSignupBox>
         </LoginCard>
       </LoginLayout>
     </form>
@@ -84,13 +129,13 @@ const LoginCard = styled.div`
   width: 612px;
   height: 824px;
 
-  margin: 80px 115px;
+  padding-top: 80px;
 
   display: flex;
   flex-direction: column;
 
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 
   background: #fff;
 
@@ -106,6 +151,44 @@ const LoginInput = styled.input`
   border-radius: 10px;
 
   border: none;
+
+  margin: 15px;
+
+  padding-left: 24px;
+
+  font-size: 1.2rem;
+
+  &::placeholder {
+    font-size: 20px;
+    color: #486284;
+  }
 `;
 
+const FindIdBox = styled.div`
+  width: 384px;
+
+  margin-bottom: 49px;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: end;
+
+  gap: 24px;
+`;
+
+const GoSignupBox = styled.div`
+  width: 384px;
+
+  margin-top: 13px;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+`;
 export default Login;
