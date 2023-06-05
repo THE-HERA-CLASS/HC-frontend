@@ -37,6 +37,13 @@ const ButtonStyled = styled.button`
   background-color: ${({ bc }) => `${bc}`};
   box-shadow: ${({ shadow }) => `${shadow}`};
   position: ${({ position }) => `${position}`};
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          pointer-events: none;
+          background-color: aliceblue;
+        `
+      : ''}
   ${({ border }) =>
     border
       ? css`
