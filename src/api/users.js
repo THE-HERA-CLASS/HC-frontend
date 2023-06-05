@@ -58,7 +58,7 @@ const emailConfirmGet = async (email) => {
     const response = await api.get(`/api/emailExists/${email}`);
 
     if (response.status === 200) {
-      alert(response.msg);
+      alert(`사용 가능한 이메일입니다.`);
       /* 200으로 성공했을 때 true 혹은 Promise.resolve()를 return해줘야 함. */
       return response.status;
     } else if (response.status === 201) {
@@ -78,7 +78,7 @@ const nicknameConfirmGet = async (nickName) => {
   try {
     const response = await api.get(`/api/nicknameExists/${nickName}`);
     if (response.status === 200) {
-      alert(response.msg);
+      alert(`사용 가능한 닉네임입니다.`);
       return response.status;
     } else if (response.status === 201) {
       alert(`이미 사용중인 닉네임입니다.`);
@@ -96,14 +96,15 @@ const nicknameConfirmGet = async (nickName) => {
 const authMailPost = async (email) => {
   try {
     const response = await api.post(`/api/sendAuthMail`, email);
+    console.log(response);
     if (response.status === 200) {
       alert(`입력하신 이메일로 인증코드를 발송 하였습니다. 인증 코드를 입력해주세요`);
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
