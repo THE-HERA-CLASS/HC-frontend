@@ -132,9 +132,10 @@ function Signup() {
   //이메일 중복 체크 핸들러
   const emailConfirmClick = async () => {
     const response = await emailConfirmGet(email);
+    console.log(response);
     if (response === 200) {
       //중복 체크 후 바로 인증코드 발송
-      authEmaliMutation.mutate(email);
+      authEmaliMutation.mutate({ email });
     }
   };
 
@@ -178,12 +179,6 @@ function Signup() {
     signupMutation.mutate(newUser);
   };
 
-  // 임시 데이터입니다
-  const Options = [
-    { major_id: '1', name: '포크레인' },
-    { major_id: '2', name: '굴삭기' },
-    { major_id: '3', name: '컴퓨터공학' },
-  ];
   return (
     <form onSubmit={submitHandler}>
       <SignupLayout>
@@ -230,7 +225,7 @@ function Signup() {
               </CustomBtn>
             </ConfirmBox>
 
-            {email.length > 0 && <ErrorMsg isError={isEmail}>{emailMsg}</ErrorMsg>}
+            {email.length > 0 && <ErrorMsg iserror={isEmail.toString()}>{emailMsg}</ErrorMsg>}
           </ItemBox>
 
           {/* 인증코드 인풋*/}
@@ -269,7 +264,7 @@ function Signup() {
               placeholder='비밀번호'
             />
 
-            {password.length > 0 && <ErrorMsg isError={isPassword}>{passwordMsg}</ErrorMsg>}
+            {password.length > 0 && <ErrorMsg iserror={isPassword.toString()}>{passwordMsg}</ErrorMsg>}
           </ItemBox>
 
           {/* 비밀번호 확인 인풋*/}
@@ -283,7 +278,7 @@ function Signup() {
               placeholder='비밀번호 재확인'
             />
 
-            {confirmPw.length > 0 && <ErrorMsg isError={isConfirmPw}>{confirmPwMsg}</ErrorMsg>}
+            {confirmPw.length > 0 && <ErrorMsg iserror={isConfirmPw.toString()}>{confirmPwMsg}</ErrorMsg>}
           </ItemBox>
 
           {/* 닉네임 인풋*/}
@@ -311,7 +306,7 @@ function Signup() {
               </CustomBtn>
             </ConfirmBox>
 
-            {nickname.length > 0 && <ErrorMsg isError={isNickname}>{nicknameMsg}</ErrorMsg>}
+            {nickname.length > 0 && <ErrorMsg iserror={isNickname.toString()}>{nicknameMsg}</ErrorMsg>}
           </ItemBox>
 
           {/* 전공선택*/}
@@ -321,7 +316,7 @@ function Signup() {
               <option value='' disabled hidden>
                 전공 선택
               </option>
-              {Options?.map((major) => {
+              {data?.map((major) => {
                 return (
                   <option key={major.major_id} value={major.major_id}>
                     {major.name}
@@ -453,6 +448,6 @@ const ConfirmBox = styled.div`
 `;
 
 const ErrorMsg = styled.span`
-  color: ${({ isError }) => (isError ? 'blue' : 'red')};
+  color: ${({ iserror }) => (iserror === 'true' ? 'blue' : 'red')};
 `;
 export default Signup;
