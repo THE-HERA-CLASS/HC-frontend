@@ -40,7 +40,7 @@ const Container = styled.div`
 
   border-radius: 10px;
 
-  background: #d3dce7;
+  background: #d2e6ff;
 
   gap: 10px;
 `;

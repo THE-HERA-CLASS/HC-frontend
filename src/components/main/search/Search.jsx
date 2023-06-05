@@ -74,7 +74,7 @@ function Search() {
         })}
       </Select>
 
-      <CustomBtn width='115px' height='72px' _borderradius='0 10px 10px 0' bc='#486284'>
+      <CustomBtn width='116px' height='74px' _borderradius='0 10px 10px 0' bc='#282897'>
         <img src={SearchIcon} alt='' />
       </CustomBtn>
     </SelectBox>
@@ -83,7 +83,8 @@ function Search() {
 const SelectBox = styled.div`
   width: 788px;
   height: 72px;
-  background: #aab5c3;
+  border: 1px solid #454545;
+  background: #ffffff;
   display: flex;
   flex-direction: row;
   align-items: center;

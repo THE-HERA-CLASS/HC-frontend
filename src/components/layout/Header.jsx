@@ -69,14 +69,14 @@ function Header() {
           fontSize='15px'
           fontWeight='600'
           fontFamily='Inter'
-          color='#486284'
+          color='#282897'
           textDecoration='underline'
           opacity='0.75'
           cursor='pointer'
           onClick={goSignup}>
           회원가입
         </CustomText>
-        <CustomBtn width='82px' height='38px' bc=' #486284' _borderradius='4px'>
+        <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
           <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogins}>
             로그인
           </CustomText>

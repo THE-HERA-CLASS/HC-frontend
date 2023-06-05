@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { signupPost } from '../api/users';
+import { authMailPost, emailConfirmGet, nicknameConfirmGet, signupPost, verifyMailPost } from '../api/users';
 import { useNavigate } from 'react-router-dom';
 import { majorGet } from '../api/certificate';
+import { styled } from 'styled-components';
+import CustomBtn from '../components/common/CustomBtn';
+import CustomText from '../components/common/CustomText';
 
 function Signup() {
   const navigate = useNavigate();
@@ -15,6 +18,7 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
   const [major_id, setMajor_id] = useState('');
+  const [verifyCode, setVerifyCode] = useState('');
 
   //오류메세지 상태저장
   const [emailMsg, setEmailMsg] = useState('');
@@ -28,6 +32,13 @@ function Signup() {
   const [isPassword, setIsPassword] = useState(false);
   const [isConfirmPw, setIsConfirmPw] = useState(false);
   const [isMajor, setIsMajor] = useState(false);
+
+  //중복검사
+  const [existsEmail, setExistsEmail] = useState(false);
+  const [existsNickname, setExistsNickname] = useState(false);
+
+  //이메일 인증
+  const [verifyEmail, setVerifyEmail] = useState(false);
 
   // 회원가입 후 로그인 페이지로 이동 하기 위한 함수
   const goLogin = () => {
@@ -79,6 +90,7 @@ function Signup() {
     }
   };
 
+  //비밀번호 확인 이벤트 핸들러
   const onChangeConfirmPwHandler = (e) => {
     const confirmPwCurrent = e.target.value;
     const passwordCurrent = password;
@@ -105,6 +117,51 @@ function Signup() {
     }
   };
 
+  //인증코드 이벤트 핸들러
+  const onChangeVerifyCodeHandler = (e) => {
+    setVerifyCode(e.target.value);
+  };
+
+  // 인증 코드 발송 함수
+  const authEmaliMutation = useMutation(authMailPost, {
+    onSuccess: () => {
+      setExistsEmail(true);
+    },
+  });
+
+  //이메일 중복 체크 핸들러
+  const emailConfirmClick = async () => {
+    const response = await emailConfirmGet(email);
+    if (response === 200) {
+      //중복 체크 후 바로 인증코드 발송
+      authEmaliMutation.mutate(email);
+    }
+  };
+
+  //닉네임 중복 체크 핸들러
+  const nicknameConfirmHandler = async () => {
+    const response = await nicknameConfirmGet(nickname);
+    if (response === 200) {
+      setExistsNickname(true);
+    }
+  };
+
+  // 이메일 인증하기 함수
+  const verifyMailMutation = useMutation(verifyMailPost, {
+    onSuccess: () => {
+      setVerifyEmail(true);
+    },
+  });
+
+  const verifyMailClick = () => {
+    const verify = {
+      email,
+      verifyCode,
+    };
+    verifyMailMutation.mutate(verify);
+  };
+
+  //회원가입 요청 함수
   const signupMutation = useMutation(signupPost, {
     onSuccess: () => {
       goLogin();
@@ -129,51 +186,273 @@ function Signup() {
   ];
   return (
     <form onSubmit={submitHandler}>
-      <input
-        name='email'
-        onChange={onChangeEmailHandler}
-        value={email}
-        type='email'
-        placeholder='email@gamil.com'
-        pattern='[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.]+[a-zA-Z]+[.]*[a-zA-Z]*'
-      />
-      {email.length > 0 && <span>{emailMsg}</span>}
-      <input name='nickname' onChange={onChangeNicknameHandler} value={nickname} type='text' placeholder='닉네임' />
-      {nickname.length > 0 && <span>{nicknameMsg}</span>}
-      <input
-        name='password'
-        onChange={onChangePasswordHandler}
-        value={password}
-        type='password'
-        placeholder='비밀번호'
-      />
-      {password.length > 0 && <span>{passwordMsg}</span>}
-      <input
-        name='confirmPw'
-        onChange={onChangeConfirmPwHandler}
-        value={confirmPw}
-        type='password'
-        placeholder='비밀번호 재확인'
-      />
-      {confirmPw.length > 0 && <span>{confirmPwMsg}</span>}
-      <select name='major_id' value={major_id} onChange={onChangeMajorHandler}>
-        <option value='' selected disabled hidden>
-          ===전공 선택===
-        </option>
-        {Options?.map((major) => {
-          return (
-            <option key={major.major_id} value={major.major_id}>
-              {major.name}
-            </option>
-          );
-        })}
-      </select>
-      {major_id === '' && <span>전공을 선택해주세요</span>}
-      <button type='submit' disabled={!(isEmail && isNickname && isPassword && isMajor && isConfirmPw)}>
-        회원가입
-      </button>
+      <SignupLayout>
+        <SignupContainer>
+          {/* 페이지 타이틀 */}
+          <TitleBox>
+            <CustomText color='#000' fontSize='2rem' fontWeight='700'>
+              회원가입
+            </CustomText>
+            <CustomText
+              color='#282897'
+              fontSize='1.5rem'
+              fontWeight='700'
+              textDecoration='underline'
+              cursor='pointer'
+              onClick={goLogin}>
+              로그인
+            </CustomText>
+          </TitleBox>
+
+          {/* 아이디 인풋*/}
+          <ItemBox>
+            <CustomText fontSize='1.5rem'>아이디</CustomText>
+            <ConfirmBox>
+              <SignupInput
+                name='email'
+                onChange={onChangeEmailHandler}
+                value={email}
+                type='email'
+                placeholder='email@gamil.com'
+                pattern='[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.]+[a-zA-Z]+[.]*[a-zA-Z]*'
+              />
+
+              <CustomBtn
+                type='button'
+                width='200px'
+                height='60px'
+                bc='#282897'
+                _borderradius='10px'
+                onClick={emailConfirmClick}>
+                <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
+                  중복확인
+                </CustomText>
+              </CustomBtn>
+            </ConfirmBox>
+
+            {email.length > 0 && <ErrorMsg isError={isEmail}>{emailMsg}</ErrorMsg>}
+          </ItemBox>
+
+          {/* 인증코드 인풋*/}
+          <ItemBox>
+            <ConfirmBox>
+              <SignupInput
+                name='verifyCode'
+                onChange={onChangeVerifyCodeHandler}
+                value={verifyCode}
+                type='email'
+                placeholder='인증코드를 입력해주세요.'
+              />
+
+              <CustomBtn
+                type='button'
+                width='200px'
+                height='60px'
+                bc='#282897'
+                _borderradius='10px'
+                onClick={verifyMailClick}>
+                <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
+                  인증하기
+                </CustomText>
+              </CustomBtn>
+            </ConfirmBox>
+          </ItemBox>
+
+          {/* 비밀번호 인풋*/}
+          <ItemBox>
+            <CustomText fontSize='1.5rem'>비밀번호</CustomText>
+            <SignupInput
+              name='password'
+              onChange={onChangePasswordHandler}
+              value={password}
+              type='password'
+              placeholder='비밀번호'
+            />
+
+            {password.length > 0 && <ErrorMsg isError={isPassword}>{passwordMsg}</ErrorMsg>}
+          </ItemBox>
+
+          {/* 비밀번호 확인 인풋*/}
+          <ItemBox>
+            <CustomText fontSize='1.5rem'>비밀번호 확인</CustomText>
+            <SignupInput
+              name='confirmPw'
+              onChange={onChangeConfirmPwHandler}
+              value={confirmPw}
+              type='password'
+              placeholder='비밀번호 재확인'
+            />
+
+            {confirmPw.length > 0 && <ErrorMsg isError={isConfirmPw}>{confirmPwMsg}</ErrorMsg>}
+          </ItemBox>
+
+          {/* 닉네임 인풋*/}
+          <ItemBox>
+            <CustomText fontSize='1.5rem'>닉네임</CustomText>
+            <ConfirmBox>
+              <SignupInput
+                name='nickname'
+                onChange={onChangeNicknameHandler}
+                value={nickname}
+                type='text'
+                placeholder='닉네임'
+              />
+
+              <CustomBtn
+                type='button'
+                width='200px'
+                height='60px'
+                bc='#282897'
+                _borderradius='10px'
+                onClick={nicknameConfirmHandler}>
+                <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
+                  중복확인
+                </CustomText>
+              </CustomBtn>
+            </ConfirmBox>
+
+            {nickname.length > 0 && <ErrorMsg isError={isNickname}>{nicknameMsg}</ErrorMsg>}
+          </ItemBox>
+
+          {/* 전공선택*/}
+          <ItemBox>
+            <CustomText fontSize='1.5rem'>전공선택</CustomText>
+            <MajorSelector name='major_id' value={major_id} onChange={onChangeMajorHandler}>
+              <option value='' disabled hidden>
+                전공 선택
+              </option>
+              {Options?.map((major) => {
+                return (
+                  <option key={major.major_id} value={major.major_id}>
+                    {major.name}
+                  </option>
+                );
+              })}
+            </MajorSelector>
+
+            {major_id === '' && <ErrorMsg>전공을 선택해주세요</ErrorMsg>}
+          </ItemBox>
+
+          <CustomBtn
+            _borderradius='10px'
+            margin='78px 0 0 0'
+            width='100%'
+            height='72px'
+            bc='#282897'
+            type='submit'
+            disabled={
+              !isEmail ||
+              !isNickname ||
+              !isPassword ||
+              !isMajor ||
+              !isConfirmPw ||
+              !existsEmail ||
+              !existsNickname ||
+              !verifyEmail
+            }>
+            <CustomText color='#fff' fontSize='1.5rem' fontWeight='700'>
+              가입하기
+            </CustomText>
+          </CustomBtn>
+        </SignupContainer>
+      </SignupLayout>
     </form>
   );
 }
 
+const SignupLayout = styled.div`
+  width: 588px;
+  margin: auto;
+`;
+
+const SignupContainer = styled.div`
+  width: 588px;
+
+  margin: 70px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TitleBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  margin-bottom: 40px;
+
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 156px;
+`;
+
+const SignupInput = styled.input`
+  width: 100%;
+  height: 60px;
+
+  border-radius: 10px;
+  border: none;
+
+  box-sizing: border-box;
+
+  padding-left: 25px;
+
+  background: #d2e6ff;
+
+  font-size: 1.2rem;
+
+  &::placeholder {
+    font-size: 20px;
+    color: #898989;
+  }
+`;
+
+const MajorSelector = styled.select`
+  width: 100%;
+  height: 60px;
+
+  border-radius: 10px;
+  border: none;
+
+  box-sizing: border-box;
+
+  background: #d2e6ff;
+
+  text-align: center;
+
+  color: #898989;
+
+  font-size: 20px;
+`;
+
+const ItemBox = styled.div`
+  width: 100%;
+  margin: 12px 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: start;
+  justify-content: center;
+
+  gap: 5px;
+`;
+
+const ConfirmBox = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: end;
+
+  gap: 15px;
+`;
+
+const ErrorMsg = styled.span`
+  color: ${({ isError }) => (isError ? 'blue' : 'red')};
+`;
 export default Signup;

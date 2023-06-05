@@ -13,25 +13,22 @@ instance.interceptors.request.use((confige) => {
   let isLogin = false;
 
   let accessToken;
-  let refreshToken;
 
-  const checkLogin = (accessToken, refreshToken) => {
-    if (accessToken !== '' && refreshToken !== '') isLogin = true;
+  const checkLogin = (accessToken) => {
+    if (accessToken !== '') isLogin = true;
     else isLogin = false;
   };
 
   accessToken = Cookies.get('accessToken');
-  refreshToken = Cookies.get('refreshToken');
 
-  if (accessToken && refreshToken) {
-    checkLogin(refreshToken, refreshToken);
+  if (accessToken) {
+    checkLogin(accessToken);
   }
 
   // 로그인 되었다면 헤더에 토큰 추가.
 
   if (isLogin) {
     confige.headers.accessToken = accessToken;
-    confige.headers.refreshToken = refreshToken;
   }
   return confige;
 });
