@@ -6,9 +6,9 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-instance.interceptors.request.use((confige) => {
-  confige.headers = {};
-  confige.headers['Content-Type'] = 'application/json';
+instance.interceptors.request.use((config) => {
+  config.headers = {};
+  config.headers['Content-Type'] = 'application/json';
   // 로그인 여부 확인
   let isLogin = false;
 
@@ -28,25 +28,25 @@ instance.interceptors.request.use((confige) => {
   // 로그인 되었다면 헤더에 토큰 추가.
 
   if (isLogin) {
-    confige.headers.accessToken = accessToken;
+    config.headers.accessToken = accessToken;
   }
-  return confige;
+  return config;
 });
 
-instance.interceptors.response.use((respones) => {
+instance.interceptors.response.use((response) => {
   // 응답에 토큰이 있다면 토큰 저장
   try {
-    // console.log(`interceptor response => ${respones}`);
-
-    const res = respones.data;
+    const res = response;
 
     if (res?.accessToken === '') {
       return;
     } else if (res?.accessToken !== '') {
-      Cookies.set('accessToken', res.accessToken);
+      Cookies.set('accessToken', res?.accessToken);
     }
+    return response;
   } catch (e) {
     console.log(e);
+    return Promise.reject(e);
   }
 });
 export default instance;

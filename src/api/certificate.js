@@ -4,9 +4,10 @@ import api from '../axios/api';
 const majorGet = async () => {
   try {
     const response = await api.get(`/api/major`);
-    return response.data;
+    console.log(response);
+    return response.data.data;
   } catch (e) {
-    // console.log(e.response.errMsg);
+    console.log(e);
   }
 };
 
@@ -14,9 +15,9 @@ const majorGet = async () => {
 const certificateGet = async () => {
   try {
     const response = await api.get(`/api/certificate`);
-    return response.data;
+    return response.data.data;
   } catch (e) {
-    // console.log(e.response.errMsg);
+    console.log(e.response);
   }
 };
 
@@ -24,9 +25,9 @@ const certificateGet = async () => {
 const subjectGet = async () => {
   try {
     const response = await api.get(`/api/subject`);
-    return response.data;
+    return response.data.data;
   } catch (e) {
-    // console.log(e.response.errMsg);
+    console.log(e.response.errMsg);
   }
 };
 
