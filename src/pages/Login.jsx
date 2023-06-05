@@ -46,7 +46,7 @@ function Login() {
     <form onSubmit={submitHandler}>
       <LoginLayout>
         <LoginCard>
-          <CustomText margin='0 0 49px 0' fontSize='2rem' fontWeight='700' color='#486284'>
+          <CustomText margin='0 0 49px 0' fontSize='2rem' fontWeight='700' color='#282897'>
             로그인
           </CustomText>
 
@@ -69,25 +69,15 @@ function Login() {
           />
 
           <FindIdBox>
-            <CustomText
-              fontSize='0.95rem'
-              fontWeight='500'
-              color=' #486284'
-              textDecoration='underline'
-              cursor='pointer'>
+            <CustomText fontSize='0.95rem' fontWeight='500' textDecoration='underline' cursor='pointer'>
               아이디 찾기
             </CustomText>
-            <CustomText
-              fontSize='0.95rem'
-              fontWeight='500'
-              color=' #486284'
-              textDecoration='underline'
-              cursor='pointer'>
+            <CustomText fontSize='0.95rem' fontWeight='500' textDecoration='underline' cursor='pointer'>
               비밀번호 찾기
             </CustomText>
           </FindIdBox>
 
-          <CustomBtn type='submit' width='384px' height='66px' _borderradius='10px' bc='#486284'>
+          <CustomBtn type='submit' width='384px' height='66px' _borderradius='10px' bc='#282897'>
             <CustomText fontSize='1.5rem' fontWeight='700' color='#fff'>
               Login
             </CustomText>
@@ -99,8 +89,7 @@ function Login() {
             </CustomText>
             <CustomText
               fontSize='1.2rem'
-              fontWeight='500'
-              color=' #486284'
+              fontWeight='700'
               textDecoration='underline'
               onClick={goSignup}
               cursor='pointer'>
@@ -114,9 +103,11 @@ function Login() {
 }
 
 const LoginLayout = styled.div`
-  background: #d3dce7;
+  background: #d2e6ff;
 
   padding: 70px 0;
+
+  height: 1048px;
 
   display: flex;
   flex-direction: row;
@@ -127,7 +118,7 @@ const LoginLayout = styled.div`
 
 const LoginCard = styled.div`
   width: 612px;
-  height: 824px;
+  height: 600px;
 
   padding-top: 80px;
 
@@ -146,7 +137,7 @@ const LoginInput = styled.input`
   width: 384px;
   height: 60px;
 
-  background: #d3dce7;
+  background: #d2e6ff;
 
   border-radius: 10px;
 
@@ -160,7 +151,7 @@ const LoginInput = styled.input`
 
   &::placeholder {
     font-size: 20px;
-    color: #486284;
+    color: #898989;
   }
 `;
 

@@ -35,20 +35,24 @@ function Main() {
               <CustomBtn
                 width='180px'
                 height='54px'
-                border='3px solid #486284'
+                border='3px solid #282897'
                 _borderradius='30px'
-                bc='#D3DCE7'
+                bc='#D2E6FF'
                 onClick={goSignup}>
-                회원가입
+                <CustomText fontSize='1.2rem' fontWeight='700' color='#282897'>
+                  회원가입
+                </CustomText>
               </CustomBtn>
               <CustomBtn
                 width='180px'
                 height='54px'
-                border='3px solid #486284'
+                border='3px solid #282897'
                 _borderradius='30px'
-                bc='#D3DCE7'
+                bc='#282897'
                 onClick={goLogin}>
-                로그인
+                <CustomText fontSize='1.2rem' fontWeight='700' color='#fff'>
+                  로그인
+                </CustomText>
               </CustomBtn>
             </ButtonBox>
           </TextContainer>
@@ -56,7 +60,7 @@ function Main() {
         </ExplainBox>
         <SearchBox>
           <SearchTextBox>
-            <CustomText fontSize='25px' fontWeight='700' fontFamily='Inter'>
+            <CustomText fontSize='1.6rem' fontWeight='700' color='#fff'>
               기출문제 찾기
             </CustomText>
           </SearchTextBox>
@@ -91,7 +95,7 @@ const TopBox = styled.div`
   height: 598px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  background: #d3dce7;
+  background: #d2e6ff;
 
   &::content {
     width: 100%;
@@ -134,7 +138,7 @@ const SearchBox = styled.div`
   width: 100%;
   height: 194px;
   border-radius: 10px;
-  background: #eff3fd;
+  background: #f8faff;
 
   display: flex;
   flex-direction: row;
@@ -145,7 +149,7 @@ const SearchBox = styled.div`
 const SearchTextBox = styled.div`
   width: 282px;
   height: 194px;
-  background: #aab5c3;
+  background: #282897;
   border-radius: 10px 0 0 10px;
 
   display: flex;
