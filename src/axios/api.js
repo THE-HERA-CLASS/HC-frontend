@@ -43,7 +43,6 @@ instance.interceptors.response.use((response) => {
     } else if (res?.accessToken !== '') {
       Cookies.set('accessToken', res?.accessToken);
     }
-
     return response;
   } catch (e) {
     console.log(e);
