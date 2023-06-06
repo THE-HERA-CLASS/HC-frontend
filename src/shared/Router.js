@@ -9,6 +9,8 @@ import TestPage from '../pages/TestPage';
 import SearchResultPage from '../pages/SearchResultPage';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import ParsingEditor from '../pages/ParsingEditor';
+
 
 function Router() {
   return (
@@ -22,6 +24,7 @@ function Router() {
         <Route path='/usermypages/:user_id' element={<UserMyPage />} />
         <Route path='/testpages' element={<TestPage />} />
         <Route path='/searchresultpage' element={<SearchResultPage />} />
+        <Route path='/parsingeditor' element={<ParsingEditor />} />
       </Routes>
       <FooterConditionalRender />
     </BrowserRouter>
@@ -30,7 +33,7 @@ function Router() {
 
 function FooterConditionalRender() {
   const location = useLocation();
-  return location.pathname !== '/adminpages' && location.pathname !== '/logins' && location.pathname !== '/signups' ? (
+  return location.pathname !== '/parsingeditor' && location.pathname !== '/logins' && location.pathname !== '/signups' ? (
     <Footer />
   ) : null;
 }
