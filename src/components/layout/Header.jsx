@@ -3,8 +3,13 @@ import { styled } from 'styled-components';
 import CustomText from '../common/CustomText';
 import CustomBtn from '../common/CustomBtn';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { useMutation } from 'react-query';
+import { LogoutDelete } from '../../api/users';
 
 function Header() {
+  const cookie = Cookies.get('accessToken');
+
   const navigate = useNavigate();
 
   const goHome = () => {
@@ -22,7 +27,15 @@ function Header() {
   const goUserMyPage = () => {
     navigate('/usermypages');
   };
-
+  const LogoutMutation = useMutation(LogoutDelete, {
+    onSuccess: () => {
+      Cookies.remove('accessToken');
+      goHome();
+    },
+  });
+  const LogoutHandler = () => {
+    LogoutMutation.mutate();
+  };
   return (
     <Container>
       <Title>
@@ -76,11 +89,19 @@ function Header() {
           onClick={goSignup}>
           회원가입
         </CustomText>
-        <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
-          <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogins}>
-            로그인
-          </CustomText>
-        </CustomBtn>
+        {cookie ? (
+          <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
+            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={LogoutHandler}>
+              로그아웃
+            </CustomText>
+          </CustomBtn>
+        ) : (
+          <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
+            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogins}>
+              로그인
+            </CustomText>
+          </CustomBtn>
+        )}
       </MenuWrap>
     </Container>
   );

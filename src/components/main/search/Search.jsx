@@ -4,6 +4,7 @@ import CustomBtn from '../../common/CustomBtn';
 import { certificateGet, majorGet, subjectGet } from '../../../api/certificate';
 import { useQuery } from 'react-query';
 import SearchIcon from '../../../Img/MainPage/search.svg';
+import SearchDown from '../../../Img/MainPage/searchdown.svg';
 
 function Search() {
   // 전공 불러오기
@@ -83,6 +84,7 @@ function Search() {
 const SelectBox = styled.div`
   width: 788px;
   height: 72px;
+  padding-left: 20px;
   border: 1px solid #454545;
   background: #ffffff;
   display: flex;
@@ -105,13 +107,18 @@ const Select = styled.select`
   font-size: 20px;
   font-weight: 400;
 
-  text-align: right;
+  text-align: center;
 
-  option {
-    background: #aab5c3;
+  background: url(${SearchDown}) no-repeat 95% 50%;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  select::-ms-expand {
+    display: none;
   }
 `;
-
 const Divider = styled.div`
   height: 40px;
   border-left: 1px solid #000000;
