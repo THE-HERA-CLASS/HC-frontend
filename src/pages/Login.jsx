@@ -31,7 +31,11 @@ function Login() {
   };
 
   // 요청 제출 로직
-  const loginMutation = useMutation(loginPost);
+  const loginMutation = useMutation(loginPost, {
+    onSuccess: () => {
+      goHome();
+    },
+  });
   const submitHandler = (e) => {
     e.preventDefault();
 

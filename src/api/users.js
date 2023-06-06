@@ -1,18 +1,36 @@
 import api from '../axios/api';
 
 // 로그인
-const loginPost = async (formData, goHome) => {
+const loginPost = async (formData) => {
   try {
     const response = await api.post(`/api/login`, formData);
     if (response.status === 200) {
-      const res = response.data;
-      alert(`${res.nicname}님 로그인 되셨습니다.`);
-      goHome();
+      alert(`로그인 되었습니다.`);
     }
   } catch (e) {
-    if (e.response.status === 404) {
-      alert(`죄송합니다 서버와 통신에 있어 문제가 발생하였습니다.
-      잠시 후 다시 이용해주세요.`);
+    if (e.response.status === 400) {
+      alert(e.response.data.errMsg);
+    } else if (e.response.status === 411) {
+      alert(e.response.data.errMsg);
+    } else if (e.response.status === 419) {
+      alert(e.response.data.errMsg);
+    }
+  }
+};
+
+//로그아웃
+
+const LogoutDelete = async () => {
+  try {
+    const response = await api.delete(`/api/logout`);
+    if (response.status === 200) {
+      alert(`로그아웃 하셨습니다.`);
+    }
+  } catch (e) {
+    if (e.response.status === 400) {
+      alert(e.response.data.errMsg);
+    } else if (e.response.status === 419) {
+      alert(e.response.data.errMsg);
     }
   }
 };
@@ -114,14 +132,14 @@ const verifyMailPost = async (verify) => {
   try {
     const response = await api.post(`/api/verifyMail`, verify);
     if (response.status === 200) {
-      alert(response.msg);
+      alert(response.data.msg);
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
-export { loginPost, signupPost, emailConfirmGet, nicknameConfirmGet, authMailPost, verifyMailPost };
+export { loginPost, signupPost, emailConfirmGet, nicknameConfirmGet, authMailPost, verifyMailPost, LogoutDelete };
