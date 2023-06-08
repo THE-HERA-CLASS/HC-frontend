@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import axios from 'axios'; // 추가된 부분
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { majorGet, certificateGet, subjectGet } from '../api/certificate';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { majorGet, certificateGet, subjectGet } from "../api/certificate";
 
 const ParsingEditor = () => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [questions, setQuestions] = useState([]);
   const [select1, setSelect1] = useState('');
   const [select2, setSelect2] = useState('');
@@ -55,7 +53,7 @@ const ParsingEditor = () => {
       major_id: select1,
       certificate_id: select2,
       subject_id: select3,
-      contents: questions, // 혹은 contents: input, 입력된 문자열을 그대로 전송하려면 이와 같이 작성
+      contents: questions,
     };
 
     try {
@@ -73,15 +71,23 @@ const ParsingEditor = () => {
     console.log(questions); // questions 상태의 변화를 추적
   }, [questions]);
 
-  const handleInputChange = (newInput) => {
-    console.log('New input: ', newInput);
+  const handleInputChange = (e) => {
+    const newInput = e.target.value;
+    console.log("New input: ", newInput);
     setInput(newInput);
 
-    const lines = newInput.split('\n');
+    // const parser = new DOMParser();
+    // const htmlDoc = parser.parseFromString(newInput, 'text/html');
+    const lines = newInput.split("\n");
+    console.log("Lines: ", lines); // 입력된 문자열을 줄 단위로 분리한 결과 출력
     const newQuestions = [];
     let question = null;
-    let isChoice = false;
+    // let isChoice = false;
     let isExplanation = false;
+    let isExample = false;
+    let choices = [];
+    let examples = [];
+    
 
     lines.forEach((line) => {
       const numberMatch = line.match(/^\s*(\d+)\./); // 문제 번호를 찾는 정규 표현식
@@ -89,95 +95,91 @@ const ParsingEditor = () => {
       const answerMatch = line.match(/^--정답\s*(\d+)/); // 정답 정보를 찾는 정규 표현식
       const explanationStartMatch = line.match(/^<문제 해설>/); // 해설 시작을 찾는 정규 표현식
       const explanationEndMatch = line.match(/\s*\[해설작성자\s*:\s*.+\]\s*$/); // 해설 끝을 찾는 정규 표현식
-
+      const exampleMatch = line.match(/--보기/); // 보기 시작을 찾는 정규 표현식
+      const numberTextSplitRegex = /^(\d+)\.(.*)/;
+    
+      if (explanationEndMatch) {
+        if (question) {
+          question.explanation += line;
+        }
+      } else if (isExplanation) {
+        if (question) {
+          question.explanation += line;
+        }
+      }
+    
       if (numberMatch) {
         if (question) {
-          newQuestions.push(question);
+          question.examples = examples.join("\n"); // 보기를 문제 객체에 추가
+          question.choices = choices.join("\n"); // 선택지를 문제 객체에 추가
+          questions.push(question);
         }
-
+        // 문제 번호와 본문 분리
+        const numberTextSplitMatch = numberTextSplitRegex.exec(line);
+        const number = numberTextSplitMatch ? numberTextSplitMatch[1] : "";
+        const text = numberTextSplitMatch ? numberTextSplitMatch[2] : "";
+    
         question = {
-          number: numberMatch[1],
-          text: line.replace(/^\s*\d+\.\s*/, ''),
+          number: number,
+          text: text + "\n", // 문제 번호 다음에 나오는 텍스트를 문제 텍스트로 추가
           choices: [],
           answer: null,
-          explanation: '',
+          explanation: "",
+          examples: []
         };
-
-        isChoice = true;
-        isExplanation = false;
-      } else if (choiceMatch && isChoice) {
-        question.choices.push(line.trim());
-      } else if (answerMatch) {
-        question.answer = answerMatch[1];
-      } else if (explanationStartMatch) {
-        isChoice = false;
+    } else if (exampleMatch) {
+        // 보기를 시작하기 전까지의 모든 텍스트를 문제 텍스트로 처리
+        if (question && !isExample && !isExplanation) {
+            question.text += line + "\n";
+        }
+        isExample = true; // 보기가 시작되었음을 표시
+        examples.push(line); // 보기를 배열에 추가
+    } else if (choiceMatch) {
+        choices.push(line); // 선택지를 배열에 추가
+    } else if (answerMatch) {
+        if (question) {
+          question.answer = answerMatch[1];
+        }
+    } else if (explanationStartMatch) {
         isExplanation = true;
-      } else if (explanationEndMatch && isExplanation) {
-        question.explanation += line;
+        question.explanation = line + "\n";
+    } else if (explanationEndMatch) {
         isExplanation = false;
-      } else if (isChoice) {
-        question.choices[question.choices.length - 1] += '\n' + line.trim();
-      } else if (isExplanation) {
-        question.explanation += line + '\n';
-      }
+        question.explanation += line + "\n";
+    } else if (!isExample && !isExplanation) {
+        // 보기나 해설이 시작되기 전까지의 모든 텍스트를 문제 텍스트로 처리
+        if (question) {
+          question.text += line + "\n";
+        }
+    }
     });
+    
 
     if (question) {
+      question.choices = choices;
       newQuestions.push(question);
     }
     console.log('New questions: ', newQuestions); // 생성된 새로운 질문 목록 출력
     setQuestions(newQuestions);
   };
-
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image'],
-    ],
-  };
-
-  const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet', 'link', 'image'];
-
+  
   return (
     <div>
       <h2 style={subHeaderStyle}>문제 관리</h2>
       <form onSubmit={handleSubmit}>
-        <Select1 value={select1} onChange={(e) => setSelect1(e.target.value)}>
-          {majors.map((major) => (
-            <option key={major.id} value={major.id}>
-              {major.name}
-            </option>
-          ))}
+        <Select1 value={select1} onChange={handleMajorChange}>
+          {majors.map(major => <option key={major.id} value={major.id}>{major.name}</option>)}
         </Select1>
-        <Select2 value={select2} onChange={(e) => setSelect2(e.target.value)}>
-          {certificates.map((certificate) => (
-            <option key={certificate.id} value={certificate.id}>
-              {certificate.name}
-            </option>
-          ))}
+        <Select2 value={select2} onChange={handleCertificateChange}>
+          {certificates.map(certificate => <option key={certificate.id} value={certificate.id}>{certificate.name}</option>)}
         </Select2>
-        <Select3 value={select3} onChange={(e) => setSelect3(e.target.value)}>
-          {subjects.map((subject) => (
-            <option key={subject.id} value={subject.id}>
-              {subject.name}
-            </option>
-          ))}
+        <Select3 value={select3} onChange={handleSubjectChange}>
+          {subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
         </Select3>
-        <TextAreaInput value={input} onChange={handleInputChange}>
-          <StyledQuill
-            theme='snow'
-            value={input}
-            onChange={(content, delta, source, editor) => {
-              const text = editor.getText();
-              handleInputChange(text);
-            }} // 수정된 부분
-            modules={modules}
-            formats={formats}
-            style={{ height: '696px' }}
-          />
-        </TextAreaInput>
+        <TextAreaInput
+        value={input} 
+        onChange={handleInputChange} 
+        />
         <ExtraBox>
           <TempSaveButton>임시저장</TempSaveButton>
           <RegisterButton>문제등록</RegisterButton>
@@ -189,14 +191,12 @@ const ParsingEditor = () => {
           questions.length
             ? questions
                 .map((question) => {
-                  console.log('Question: ', question); // 질문 항목 출력
-                  const { number, text, choices, answer, explanation } = question;
-                  return `번호: ${number}\n문제: ${text}\n보기: ${choices.join(
-                    '\n',
-                  )}\n문제해설: ${explanation}\n정답: ${answer}`;
+                  const { number, text, choices, answer, explanation, examples } =
+                    question;
+                  return `번호:${number}\n문제:\n${text}\n보기:\n${examples.join("\n")}\n선택지:\n${choices.join("\n")}\n${explanation}\n정답:${answer}`;
                 })
-                .join('\n')
-            : ''
+                .join("\n\n")
+            : ""
         }
       />
     </div>
@@ -239,7 +239,7 @@ const Select3 = styled(Select1)`
   left: 664px;
 `;
 
-const TextAreaInput = styled.div`
+const TextAreaInput = styled.textarea`
   position: absolute;
   width: 876px;
   height: 734px;
@@ -248,10 +248,6 @@ const TextAreaInput = styled.div`
   background: #d3dce7;
   border-radius: 10px;
   resize: none;
-  .quill {
-    // ReactQuill 컴포넌트 스타일링
-    height: 100%;
-  }
 `;
 
 const ExtraBox = styled.div`
@@ -313,23 +309,6 @@ const RegisterButton = styled.button`
   align-items: center;
   letter-spacing: -0.03em;
   color: #d3dce7;
-`;
-
-const StyledQuill = styled(ReactQuill)`
-  .ql-container.ql-snow {
-    border-radius: 10px; // 추가된 부분
-    border: 1px solid #ccc;
-  }
-  .ql-toolbar.ql-snow {
-    border-radius: 10px 10px 0 0; // 추가된 부분
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-    padding: 8px;
-  }
-  .ql-editor {
-    border-radius: 0 0 10px 10px; // 추가된 부분
-  }
 `;
 
 export default ParsingEditor;
