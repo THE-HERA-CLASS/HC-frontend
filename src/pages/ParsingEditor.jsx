@@ -6,9 +6,9 @@ import { majorGet, certificateGet, subjectGet } from "../api/certificate";
 const ParsingEditor = () => {
   const [input, setInput] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [select1, setSelect1] = useState("");
-  const [select2, setSelect2] = useState("");
-  const [select3, setSelect3] = useState("");
+  const [select1, setSelect1] = useState('');
+  const [select2, setSelect2] = useState('');
+  const [select3, setSelect3] = useState('');
   const [majors, setMajors] = useState([]);
   const [certificates, setCertificates] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -63,8 +63,8 @@ const ParsingEditor = () => {
     } catch (error) {
       console.error(error);
     }
-    
-    setInput("");
+
+    setInput('');
   };
 
   useEffect(() => {
@@ -114,7 +114,6 @@ const ParsingEditor = () => {
           question.choices = choices.join("\n"); // 선택지를 문제 객체에 추가
           questions.push(question);
         }
-
         // 문제 번호와 본문 분리
         const numberTextSplitMatch = numberTextSplitRegex.exec(line);
         const number = numberTextSplitMatch ? numberTextSplitMatch[1] : "";
@@ -160,7 +159,7 @@ const ParsingEditor = () => {
       question.choices = choices;
       newQuestions.push(question);
     }
-    console.log("New questions: ", newQuestions); // 생성된 새로운 질문 목록 출력
+    console.log('New questions: ', newQuestions); // 생성된 새로운 질문 목록 출력
     setQuestions(newQuestions);
   };
   
@@ -205,21 +204,21 @@ const ParsingEditor = () => {
 };
 
 const subHeaderStyle = {
-  position: "absolute",
-  width: "95px",
-  height: "38px",
-  left: "72px",
-  top: "135px",
-  fontFamily: "Inter, sans-serif",
-  fontStyle: "normal",
-  fontWeight: "700",
-  fontSize: "25px",
-  lineHeight: "38px",
-  display: "flex",
-  alignItems: "center",
-  letterSpacing: "-0.03em",
-  color: "#000000",
-  whiteSpace: "nowrap",
+  position: 'absolute',
+  width: '95px',
+  height: '38px',
+  left: '72px',
+  top: '135px',
+  fontFamily: 'Inter, sans-serif',
+  fontStyle: 'normal',
+  fontWeight: '700',
+  fontSize: '25px',
+  lineHeight: '38px',
+  display: 'flex',
+  alignItems: 'center',
+  letterSpacing: '-0.03em',
+  color: '#000000',
+  whiteSpace: 'nowrap',
 };
 
 const Select1 = styled.select`
@@ -257,7 +256,7 @@ const ExtraBox = styled.div`
   height: 72px;
   left: 73px;
   top: 935px;
-  background: #BBC3CD;
+  background: #bbc3cd;
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -309,7 +308,7 @@ const RegisterButton = styled.button`
   justify-content: center;
   align-items: center;
   letter-spacing: -0.03em;
-  color: #D3DCE7;
+  color: #d3dce7;
 `;
 
 export default ParsingEditor;
