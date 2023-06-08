@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import axios from "axios"; // 추가된 부분
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import axios from 'axios'; // 추가된 부분
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { majorGet, certificateGet, subjectGet } from "../api/certificate";
+import { majorGet, certificateGet, subjectGet } from '../api/certificate';
 
-const parsingeditor = () => {
-  const [input, setInput] = useState("");
+const ParsingEditor = () => {
+  const [input, setInput] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [select1, setSelect1] = useState("");
-  const [select2, setSelect2] = useState("");
-  const [select3, setSelect3] = useState("");
+  const [select1, setSelect1] = useState('');
+  const [select2, setSelect2] = useState('');
+  const [select3, setSelect3] = useState('');
   const [majors, setMajors] = useState([]);
   const [certificates, setCertificates] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -65,19 +65,19 @@ const parsingeditor = () => {
     } catch (error) {
       console.error(error);
     }
-    
-    setInput("");
+
+    setInput('');
   };
 
   useEffect(() => {
     console.log(questions); // questions 상태의 변화를 추적
   }, [questions]);
-  
+
   const handleInputChange = (newInput) => {
-    console.log("New input: ", newInput);
+    console.log('New input: ', newInput);
     setInput(newInput);
 
-    const lines = newInput.split("\n");
+    const lines = newInput.split('\n');
     const newQuestions = [];
     let question = null;
     let isChoice = false;
@@ -97,10 +97,10 @@ const parsingeditor = () => {
 
         question = {
           number: numberMatch[1],
-          text: line.replace(/^\s*\d+\.\s*/, ""),
+          text: line.replace(/^\s*\d+\.\s*/, ''),
           choices: [],
           answer: null,
-          explanation: "",
+          explanation: '',
         };
 
         isChoice = true;
@@ -116,60 +116,67 @@ const parsingeditor = () => {
         question.explanation += line;
         isExplanation = false;
       } else if (isChoice) {
-        question.choices[question.choices.length - 1] += "\n" + line.trim();
+        question.choices[question.choices.length - 1] += '\n' + line.trim();
       } else if (isExplanation) {
-        question.explanation += line + "\n";
+        question.explanation += line + '\n';
       }
     });
 
     if (question) {
       newQuestions.push(question);
     }
-    console.log("New questions: ", newQuestions); // 생성된 새로운 질문 목록 출력
+    console.log('New questions: ', newQuestions); // 생성된 새로운 질문 목록 출력
     setQuestions(newQuestions);
   };
-  
+
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, false] }],
+      [{ header: [1, 2, false] }],
       ['bold', 'italic', 'underline'],
-      [{'list': 'ordered'}, {'list': 'bullet'}],
-      ['link', 'image']
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
     ],
   };
 
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline',
-    'list', 'bullet',
-    'link', 'image'
-  ];
+  const formats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet', 'link', 'image'];
 
   return (
     <div>
       <h2 style={subHeaderStyle}>문제 관리</h2>
       <form onSubmit={handleSubmit}>
         <Select1 value={select1} onChange={(e) => setSelect1(e.target.value)}>
-          {majors.map(major => <option key={major.id} value={major.id}>{major.name}</option>)}
+          {majors.map((major) => (
+            <option key={major.id} value={major.id}>
+              {major.name}
+            </option>
+          ))}
         </Select1>
         <Select2 value={select2} onChange={(e) => setSelect2(e.target.value)}>
-          {certificates.map(certificate => <option key={certificate.id} value={certificate.id}>{certificate.name}</option>)}
+          {certificates.map((certificate) => (
+            <option key={certificate.id} value={certificate.id}>
+              {certificate.name}
+            </option>
+          ))}
         </Select2>
         <Select3 value={select3} onChange={(e) => setSelect3(e.target.value)}>
-          {subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+          {subjects.map((subject) => (
+            <option key={subject.id} value={subject.id}>
+              {subject.name}
+            </option>
+          ))}
         </Select3>
-        <TextAreaInput value={input} onChange={handleInputChange} >
-        <StyledQuill
-          theme="snow"
-          value={input}
-          onChange={(content, delta, source, editor) => {
-            const text = editor.getText();
-            handleInputChange(text);
-          }} // 수정된 부분
-          modules={modules}
-          formats={formats}
-          style={{ height: '696px'}}
-        />
+        <TextAreaInput value={input} onChange={handleInputChange}>
+          <StyledQuill
+            theme='snow'
+            value={input}
+            onChange={(content, delta, source, editor) => {
+              const text = editor.getText();
+              handleInputChange(text);
+            }} // 수정된 부분
+            modules={modules}
+            formats={formats}
+            style={{ height: '696px' }}
+          />
         </TextAreaInput>
         <ExtraBox>
           <TempSaveButton>임시저장</TempSaveButton>
@@ -182,15 +189,14 @@ const parsingeditor = () => {
           questions.length
             ? questions
                 .map((question) => {
-                  console.log("Question: ", question); // 질문 항목 출력
-                  const { number, text, choices, answer, explanation } =
-                    question;
+                  console.log('Question: ', question); // 질문 항목 출력
+                  const { number, text, choices, answer, explanation } = question;
                   return `번호: ${number}\n문제: ${text}\n보기: ${choices.join(
-                    "\n"
+                    '\n',
                   )}\n문제해설: ${explanation}\n정답: ${answer}`;
                 })
-                .join("\n")
-            : ""
+                .join('\n')
+            : ''
         }
       />
     </div>
@@ -198,21 +204,21 @@ const parsingeditor = () => {
 };
 
 const subHeaderStyle = {
-  position: "absolute",
-  width: "95px",
-  height: "38px",
-  left: "72px",
-  top: "135px",
-  fontFamily: "Inter, sans-serif",
-  fontStyle: "normal",
-  fontWeight: "700",
-  fontSize: "25px",
-  lineHeight: "38px",
-  display: "flex",
-  alignItems: "center",
-  letterSpacing: "-0.03em",
-  color: "#000000",
-  whiteSpace: "nowrap",
+  position: 'absolute',
+  width: '95px',
+  height: '38px',
+  left: '72px',
+  top: '135px',
+  fontFamily: 'Inter, sans-serif',
+  fontStyle: 'normal',
+  fontWeight: '700',
+  fontSize: '25px',
+  lineHeight: '38px',
+  display: 'flex',
+  alignItems: 'center',
+  letterSpacing: '-0.03em',
+  color: '#000000',
+  whiteSpace: 'nowrap',
 };
 
 const Select1 = styled.select`
@@ -242,7 +248,8 @@ const TextAreaInput = styled.div`
   background: #d3dce7;
   border-radius: 10px;
   resize: none;
-  .quill { // ReactQuill 컴포넌트 스타일링
+  .quill {
+    // ReactQuill 컴포넌트 스타일링
     height: 100%;
   }
 `;
@@ -253,7 +260,7 @@ const ExtraBox = styled.div`
   height: 72px;
   left: 73px;
   top: 935px;
-  background: #BBC3CD;
+  background: #bbc3cd;
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -305,24 +312,24 @@ const RegisterButton = styled.button`
   justify-content: center;
   align-items: center;
   letter-spacing: -0.03em;
-  color: #D3DCE7;
+  color: #d3dce7;
 `;
 
 const StyledQuill = styled(ReactQuill)`
   .ql-container.ql-snow {
-    border-radius: 10px;  // 추가된 부분
+    border-radius: 10px; // 추가된 부분
     border: 1px solid #ccc;
   }
   .ql-toolbar.ql-snow {
-    border-radius: 10px 10px 0 0;  // 추가된 부분
+    border-radius: 10px 10px 0 0; // 추가된 부분
     border: 1px solid #ccc;
     box-sizing: border-box;
     font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     padding: 8px;
   }
   .ql-editor {
-    border-radius: 0 0 10px 10px;  // 추가된 부분
+    border-radius: 0 0 10px 10px; // 추가된 부분
   }
 `;
 
-export default parsingeditor;
+export default ParsingEditor;

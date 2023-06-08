@@ -20,12 +20,16 @@ function Header() {
     navigate('/signups');
   };
 
-  const goLogins = () => {
+  const goLogin = () => {
     navigate('/logins');
   };
 
   const goUserMyPage = () => {
     navigate('/usermypages');
+  };
+
+  const goAdmin = () => {
+    navigate('/adminpages');
   };
   const LogoutMutation = useMutation(LogoutDelete, {
     onSuccess: () => {
@@ -77,6 +81,15 @@ function Header() {
           onClick={goUserMyPage}>
           마이페이지
         </CustomText>
+        <CustomText
+          fontSize='15px'
+          fontWeight='600'
+          fontFamily='Plus Jakarta Sans'
+          color='#1A202C'
+          cursor='pointer'
+          onClick={goAdmin}>
+          문제등록
+        </CustomText>
         <Divider />
         <CustomText
           fontSize='15px'
@@ -97,7 +110,7 @@ function Header() {
           </CustomBtn>
         ) : (
           <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
-            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogins}>
+            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogin}>
               로그인
             </CustomText>
           </CustomBtn>
