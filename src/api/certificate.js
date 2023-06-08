@@ -4,7 +4,6 @@ import api from '../axios/api';
 const majorGet = async () => {
   try {
     const response = await api.get(`/api/major`);
-    console.log(response);
     return response.data.data;
   } catch (e) {
     console.log(e);

@@ -157,7 +157,7 @@ function Signup() {
   const verifyMailClick = () => {
     const verify = {
       email,
-      verifyCode,
+      userCode: verifyCode,
     };
     verifyMailMutation.mutate(verify);
   };
@@ -235,7 +235,6 @@ function Signup() {
                 name='verifyCode'
                 onChange={onChangeVerifyCodeHandler}
                 value={verifyCode}
-                type='email'
                 placeholder='인증코드를 입력해주세요.'
               />
 
