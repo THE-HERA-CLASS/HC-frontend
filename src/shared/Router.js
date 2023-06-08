@@ -11,7 +11,6 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ParsingEditor from '../pages/ParsingEditor';
 
-
 function Router() {
   return (
     <BrowserRouter>
@@ -33,7 +32,10 @@ function Router() {
 
 function FooterConditionalRender() {
   const location = useLocation();
-  return location.pathname !== '/parsingeditor' && location.pathname !== '/logins' && location.pathname !== '/signups' ? (
+  return location.pathname !== '/parsingeditor' &&
+    location.pathname !== '/logins' &&
+    location.pathname !== '/signups' &&
+    location.pathname !== '/adminpages' ? (
     <Footer />
   ) : null;
 }

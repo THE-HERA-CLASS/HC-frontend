@@ -38,7 +38,7 @@ function Search() {
         </option>
         {majorData?.map((major) => {
           return (
-            <option key={major.major_id} value={major.major_id} onClick={selectChangeHandler}>
+            <option key={major.major_id} value={major.major_id}>
               {major.name}
             </option>
           );
@@ -53,7 +53,7 @@ function Search() {
         </option>
         {certificateData?.map((certificate) => {
           return (
-            <option key={certificate.certificate_id} value={certificate.certificate_id} onClick={selectChangeHandler}>
+            <option key={certificate.certificate_id} value={certificate.certificate_id}>
               {certificate.name}
             </option>
           );

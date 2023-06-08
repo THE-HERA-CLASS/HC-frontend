@@ -393,7 +393,7 @@ const SignupInput = styled.input`
 
   padding-left: 25px;
 
-  background: #d2e6ff;
+  background: #eff3fd;
 
   font-size: 1.2rem;
 
@@ -412,7 +412,7 @@ const MajorSelector = styled.select`
 
   box-sizing: border-box;
 
-  background: #d2e6ff;
+  background: #eff3fd;
 
   text-align: center;
 

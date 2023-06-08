@@ -8,13 +8,17 @@ const instance = axios.create({
 
 instance.interceptors.request.use((config) => {
   config.headers = {};
-  config.headers['Content-Type'] = 'application/json';
-  // 로그인 여부 확인
 
+  //경로에 따라 컨텐트타입지정, 기본적으로는 application/json 입니다.
+  if (config.url === '/api/question_file') {
+    config.headers['Content-Type'] = 'multipart/form-data';
+  } else {
+    config.headers['Content-Type'] = 'application/json';
+  }
+  // 로그인 여부 확인
   const accessToken = Cookies.get('accessToken');
 
   // 로그인 되었다면 헤더에 토큰 추가.
-
   if (accessToken) {
     config.headers.accessToken = accessToken;
   }

@@ -141,7 +141,7 @@ const LoginInput = styled.input`
   width: 384px;
   height: 60px;
 
-  background: #d2e6ff;
+  background: #eff3fd;
 
   border-radius: 10px;
 
