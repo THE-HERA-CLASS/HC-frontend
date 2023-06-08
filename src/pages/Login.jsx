@@ -44,7 +44,7 @@ function Login() {
       password: userInput.password,
     };
 
-    loginMutation.mutate(user, goHome);
+    loginMutation.mutate(user);
   };
   return (
     <form onSubmit={submitHandler}>

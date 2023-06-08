@@ -18,7 +18,7 @@ function Search() {
 
   // 자격증 불러오기
   const { data: certificateData } = useQuery(
-    ['certificate', select.major_id], // 쿼리 키에 select.major_id를 추가하여 전공 선택 시마다 쿼리를 재실행
+    ['matchingCertGet', select.major_id], // 쿼리 키에 select.major_id를 추가하여 전공 선택 시마다 쿼리를 재실행
     () => matchingCertGet(select.major_id),
     {
       enabled: select.major_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행

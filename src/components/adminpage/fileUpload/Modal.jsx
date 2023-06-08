@@ -4,7 +4,7 @@ import { useState } from 'react';
 import CustomBtn from '../../common/CustomBtn';
 import CustomText from '../../common/CustomText';
 import { styled } from 'styled-components';
-import { certificateGet, majorGet, matchingCertGet, matchingSubGet, subjectGet } from '../../../api/certificate';
+import { majorGet, matchingCertGet, matchingSubGet } from '../../../api/certificate';
 
 const Modal = ({ setModal }) => {
   // select태그 관리
@@ -31,10 +31,10 @@ const Modal = ({ setModal }) => {
 
   // 과목 불러오기
   const { data: subjectData } = useQuery(
-    ['matchingSub', select.certificate_id], // 쿼리 키에 select.major_id를 추가하여 전공 선택 시마다 쿼리를 재실행
+    ['matchingSub', select.certificate_id], // 쿼리 키에 select.certificate_id를 추가하여 전공 선택 시마다 쿼리를 재실행
     () => matchingSubGet(select.certificate_id),
     {
-      enabled: select.certificate_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행
+      enabled: select.certificate_id !== '', // select.certificate_id 값이 비어있지 않을 때에만 쿼리를 실행
     },
   );
   const selectChangeHandler = (e) => {
