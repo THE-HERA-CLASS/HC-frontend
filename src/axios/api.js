@@ -7,7 +7,6 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  console.log(config);
   config.headers = {};
 
   //경로에 따라 컨텐트타입지정, 기본적으로는 application/json 입니다.
