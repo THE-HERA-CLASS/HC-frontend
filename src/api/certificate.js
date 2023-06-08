@@ -39,11 +39,11 @@ const matchingCertGet = async (majorId) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(`전체 에러.`);
+      throw new Error('전체 에러.');
     } else if (e.response.status === 411) {
-      alert(`전공을 먼저 선택해주세요.`);
+      throw new Error('전공을 먼저 선택해주세요.');
     } else {
-      alert(`조회에 실패 했습니다.`);
+      throw new Error('조회에 실패 했습니다.');
     }
   }
 };
@@ -57,11 +57,11 @@ const matchingSubGet = async (certId) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(`전체 에러.`);
+      throw new Error('전체 에러.');
     } else if (e.response.status === 411) {
-      alert(`전공을 먼저 선택해주세요.`);
+      throw new Error('전공을 먼저 선택해주세요.');
     } else {
-      alert(`조회에 실패 했습니다.`);
+      throw new Error('조회에 실패 했습니다.');
     }
   }
 };
