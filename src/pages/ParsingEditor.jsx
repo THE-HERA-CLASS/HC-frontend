@@ -59,9 +59,9 @@ const ParsingEditor = () => {
     try {
       const res = await axios.post('/api/submit', questionsData);
       // 서버로부터의 응답 처리
-      console.log(res.data);
+      console.log(res?.data);
     } catch (error) {
-      console.error(error);
+      console.log(error?.res);
     }
 
     setInput('');
@@ -76,17 +76,14 @@ const ParsingEditor = () => {
     console.log("New input: ", newInput);
     setInput(newInput);
 
-    // const parser = new DOMParser();
-    // const htmlDoc = parser.parseFromString(newInput, 'text/html');
     const lines = newInput.split("\n");
-    console.log("Lines: ", lines); // 입력된 문자열을 줄 단위로 분리한 결과 출력
     const newQuestions = [];
     let question = null;
-    // let isChoice = false;
     let isExplanation = false;
     let isExample = false;
     let choices = [];
     let examples = [];
+    
     
 
     lines.forEach((line) => {
@@ -97,14 +94,20 @@ const ParsingEditor = () => {
       const explanationEndMatch = line.match(/\s*\[해설작성자\s*:\s*.+\]\s*$/); // 해설 끝을 찾는 정규 표현식
       const exampleMatch = line.match(/--보기/); // 보기 시작을 찾는 정규 표현식
       const numberTextSplitRegex = /^(\d+)\.(.*)/;
+
+      if(line.trim() === "--보기") {
+        isExample = true;
+        return;
+      }
     
       if (explanationEndMatch) {
+        isExplanation = false;
         if (question) {
-          question.explanation += line;
+          question.explanation += line + "\n";
         }
       } else if (isExplanation) {
         if (question) {
-          question.explanation += line;
+          question.explanation += line + "\n";
         }
       }
     
@@ -127,10 +130,14 @@ const ParsingEditor = () => {
           explanation: "",
           examples: []
         };
+
+        choices = [];
+        examples = [];
     } else if (exampleMatch) {
         // 보기를 시작하기 전까지의 모든 텍스트를 문제 텍스트로 처리
         if (question && !isExample && !isExplanation) {
             question.text += line + "\n";
+            examples.push(exampleMatch[1]); // 보기를 배열에 추가
         }
         isExample = true; // 보기가 시작되었음을 표시
         examples.push(line); // 보기를 배열에 추가
@@ -145,18 +152,22 @@ const ParsingEditor = () => {
         question.explanation = line + "\n";
     } else if (explanationEndMatch) {
         isExplanation = false;
-        question.explanation += line + "\n";
-    } else if (!isExample && !isExplanation) {
-        // 보기나 해설이 시작되기 전까지의 모든 텍스트를 문제 텍스트로 처리
-        if (question) {
-          question.text += line + "\n";
-        }
-    }
-    });
+    } else if (isExample) {
+      if (line !== "--보기") {
+        examples.push(line); // 보기를 배열에 추가
+      }
+  } else if (!isExample && !isExplanation) {
+      // 보기나 해설이 시작되기 전까지의 모든 텍스트를 문제 텍스트로 처리
+      if (question) {
+        question.text += line + "\n";
+      }
+  }
+  });
     
 
     if (question) {
-      question.choices = choices;
+      question.examples = examples.join("\n"); // 마지막 문제의 보기를 문제 객체에 추가
+      question.choices = choices.join("\n"); // 마지막 문제의 선택지를 문제 객체에 추가
       newQuestions.push(question);
     }
     console.log('New questions: ', newQuestions); // 생성된 새로운 질문 목록 출력
@@ -168,13 +179,13 @@ const ParsingEditor = () => {
       <h2 style={subHeaderStyle}>문제 관리</h2>
       <form onSubmit={handleSubmit}>
         <Select1 value={select1} onChange={handleMajorChange}>
-          {majors.map(major => <option key={major.id} value={major.id}>{major.name}</option>)}
+          {majors?.map(major => <option key={major.id} value={major.id}>{major.name}</option>)}
         </Select1>
         <Select2 value={select2} onChange={handleCertificateChange}>
-          {certificates.map(certificate => <option key={certificate.id} value={certificate.id}>{certificate.name}</option>)}
+          {certificates?.map(certificate => <option key={certificate.id} value={certificate.id}>{certificate.name}</option>)}
         </Select2>
         <Select3 value={select3} onChange={handleSubjectChange}>
-          {subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+          {subjects?.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
         </Select3>
         <TextAreaInput
         value={input} 
@@ -193,7 +204,7 @@ const ParsingEditor = () => {
                 .map((question) => {
                   const { number, text, choices, answer, explanation, examples } =
                     question;
-                  return `번호:${number}\n문제:\n${text}\n보기:\n${examples.join("\n")}\n선택지:\n${choices.join("\n")}\n${explanation}\n정답:${answer}`;
+                  return `번호:${number}\n문제:${text}보기:\n${examples}선택지:\n${choices}\n${explanation}정답:${answer}`;
                 })
                 .join("\n\n")
             : ""
