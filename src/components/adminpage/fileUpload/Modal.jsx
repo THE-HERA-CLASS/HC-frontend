@@ -5,6 +5,7 @@ import CustomBtn from '../../common/CustomBtn';
 import CustomText from '../../common/CustomText';
 import { styled } from 'styled-components';
 import { majorGet, matchingCertGet, matchingSubGet } from '../../../api/certificate';
+import { createPortal } from 'react-dom';
 
 const Modal = ({ setModal }) => {
   // select태그 관리
@@ -90,7 +91,7 @@ const Modal = ({ setModal }) => {
     parsingMutation.mutate(formData);
   };
 
-  return (
+  return createPortal(
     <form onSubmit={onSubmitHandler}>
       <Background>
         <ModalLayout>
@@ -164,7 +165,8 @@ const Modal = ({ setModal }) => {
           </div>
         </ModalLayout>
       </Background>
-    </form>
+    </form>,
+    document.getElementById('modal-root'),
   );
 };
 
