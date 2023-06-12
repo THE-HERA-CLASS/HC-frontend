@@ -70,7 +70,6 @@ const Modal = ({ setModal }) => {
     formData.append('subject_id', parseInt(select.subject_id));
     formData.append('year', parseInt(select.year));
     formData.append('round', parseInt(select.round));
-    console.log(formData);
     getExamIdMutation.mutate(formData);
   };
 
