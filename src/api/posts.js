@@ -3,6 +3,7 @@ import api from '../axios/api';
 const questionFilePost = async (formData) => {
   try {
     const response = await api.post(`/api/question_file`, formData);
+    console.log(response?.data?.data);
     if (response.status === 200) {
       alert('문제가 등록되었습니다 ');
     }
