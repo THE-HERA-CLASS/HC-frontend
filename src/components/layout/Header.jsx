@@ -9,7 +9,8 @@ import { LogoutDelete } from '../../api/users';
 
 function Header() {
   const cookie = Cookies.get('accessToken');
-
+  const userInfo = localStorage.getItem('userInfo');
+  const userAuth = JSON.parse(userInfo)?.authority;
   const navigate = useNavigate();
 
   const goHome = () => {
@@ -31,9 +32,15 @@ function Header() {
   const goAdmin = () => {
     navigate('/adminpages');
   };
+
+  const goTestList = () => {
+    navigate('/test-list');
+  };
+
   const LogoutMutation = useMutation(LogoutDelete, {
     onSuccess: () => {
       Cookies.remove('accessToken');
+      localStorage.removeItem('userInfo');
       goHome();
     },
   });
@@ -53,6 +60,7 @@ function Header() {
           Hera Class
         </CustomText>
       </Title>
+
       <MenuWrap>
         <CustomText
           fontSize='15px'
@@ -63,34 +71,47 @@ function Header() {
           onClick={goHome}>
           홈
         </CustomText>
-        <CustomText fontSize='15px' fontWeight='600' fontFamily='Plus Jakarta Sans' color='#1A202C' cursor='pointer'>
+
+        <CustomText
+          fontSize='15px'
+          fontWeight='600'
+          fontFamily='Plus Jakarta Sans'
+          color='#1A202C'
+          cursor='pointer'
+          onClick={goTestList}>
           기출문제
         </CustomText>
+
         <CustomText fontSize='15px' fontWeight='600' fontFamily='Plus Jakarta Sans' color='#1A202C' cursor='pointer'>
           실전연습
         </CustomText>
-        <CustomText fontSize='15px' fontWeight='600' fontFamily='Plus Jakarta Sans' color='#1A202C' cursor='pointer'>
-          문제관리
-        </CustomText>
-        <CustomText
-          fontSize='15px'
-          fontWeight='600'
-          fontFamily='Plus Jakarta Sans'
-          color='#1A202C'
-          cursor='pointer'
-          onClick={goUserMyPage}>
-          마이페이지
-        </CustomText>
-        <CustomText
-          fontSize='15px'
-          fontWeight='600'
-          fontFamily='Plus Jakarta Sans'
-          color='#1A202C'
-          cursor='pointer'
-          onClick={goAdmin}>
-          문제등록
-        </CustomText>
+
+        {userAuth === 'C' ? (
+          <CustomText
+            fontSize='15px'
+            fontWeight='600'
+            fontFamily='Plus Jakarta Sans'
+            color='#1A202C'
+            cursor='pointer'
+            onClick={goUserMyPage}>
+            마이페이지
+          </CustomText>
+        ) : null}
+
+        {userAuth === 'C' ? null : (
+          <CustomText
+            fontSize='15px'
+            fontWeight='600'
+            fontFamily='Plus Jakarta Sans'
+            color='#1A202C'
+            cursor='pointer'
+            onClick={goAdmin}>
+            문제관리
+          </CustomText>
+        )}
+
         <Divider />
+
         <CustomText
           fontSize='15px'
           fontWeight='600'
@@ -102,6 +123,7 @@ function Header() {
           onClick={goSignup}>
           회원가입
         </CustomText>
+
         {cookie ? (
           <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
             <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={LogoutHandler}>

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
@@ -34,6 +35,8 @@ instance.interceptors.response.use((response) => {
       return response;
     } else {
       Cookies.set('accessToken', res.accesstoken);
+      const userInfo = jwtDecode(res.accesstoken);
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
     }
     return response;
   } catch (e) {
