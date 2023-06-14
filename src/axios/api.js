@@ -1,13 +1,13 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
 
 const instance = axios.create({
-  baseURL: 'https://the-hera-class.com',
+  baseURL: process.env.REACT_APP_SERVER_URL,
   withCredentials: true,
 });
 
 instance.interceptors.request.use((config) => {
-  console.log(config);
   config.headers = {};
 
   //경로에 따라 컨텐트타입지정, 기본적으로는 application/json 입니다.
@@ -35,6 +35,8 @@ instance.interceptors.response.use((response) => {
       return response;
     } else {
       Cookies.set('accessToken', res.accesstoken);
+      const userInfo = jwtDecode(res.accesstoken);
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
     }
     return response;
   } catch (e) {

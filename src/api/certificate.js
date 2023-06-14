@@ -45,6 +45,7 @@ const matchingCertGet = async (majorId) => {
     } else {
       alert('조회에 실패 했습니다.');
     }
+    throw new Error('에러 발생');
   }
 };
 

@@ -14,7 +14,10 @@ function Search() {
     subject_id: '',
   });
   // 전공 불러오기
-  const { data: majorData } = useQuery('major', majorGet);
+  const { data: majorData } = useQuery('major', majorGet, {
+    //5분 동안 캐싱처리
+    cacheTime: 300 * 1000,
+  });
 
   // 자격증 불러오기
   const { data: certificateData } = useQuery(
@@ -22,6 +25,8 @@ function Search() {
     () => matchingCertGet(select.major_id),
     {
       enabled: select.major_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행
+      //5분 동안 캐싱처리
+      cacheTime: 300 * 1000,
     },
   );
 
@@ -31,6 +36,8 @@ function Search() {
     () => matchingSubGet(select.certificate_id),
     {
       enabled: select.certificate_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행
+      //5분 동안 캐싱처리
+      cacheTime: 300 * 1000,
     },
   );
 

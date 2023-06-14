@@ -6,6 +6,7 @@ const loginPost = async (formData) => {
     const response = await api.post(`/api/login`, formData);
     if (response.status === 200) {
       alert(`로그인 되었습니다.`);
+      return response;
     }
   } catch (e) {
     if (e.response.status === 400) {
@@ -22,7 +23,7 @@ const loginPost = async (formData) => {
 
 const LogoutDelete = async () => {
   try {
-    const response = await api.delete(`/api/logout`);
+    const response = await api.post(`/api/logout`);
     if (response.status === 200) {
       alert(`로그아웃 하셨습니다.`);
     }

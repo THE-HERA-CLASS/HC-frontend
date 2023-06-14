@@ -10,6 +10,7 @@ import SearchResultPage from '../pages/SearchResultPage';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ParsingEditor from '../pages/ParsingEditor';
+import TestListPages from '../pages/TestListPages';
 
 function Router() {
   return (
@@ -23,6 +24,8 @@ function Router() {
         <Route path='/usermypages/:user_id' element={<UserMyPage />} />
         <Route path='/testpages/exam/:id' element={<TestPage />} />
         <Route path='/searchresultpage' element={<SearchResultPage />} />
+        <Route path='/test-list' element={<TestListPages />} />
+        <Route path='/test-list/:certificateId' element={<TestListPages />} />
         <Route path='/parsingeditor' element={<ParsingEditor />} />
       </Routes>
       <FooterConditionalRender />

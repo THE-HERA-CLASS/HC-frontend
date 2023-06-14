@@ -4,6 +4,7 @@ import CustomBtn from '../components/common/CustomBtn';
 import CustomText from '../components/common/CustomText';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../components/adminpage/fileUpload/Modal';
+import { createPortal } from 'react-dom';
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ function AdminPage() {
   const modalHandler = () => {
     setModal(true);
   };
+  const modalRoot = document.createElement('div');
+  modalRoot.id = 'modal-root';
+  document.body.appendChild(modalRoot);
   return (
     <AdminLayout>
       <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={goParsingEditor}>
@@ -31,7 +35,7 @@ function AdminPage() {
           파일로 등록
         </CustomText>
       </CustomBtn>
-      {modal ? <Modal setModal={setModal} /> : null}
+      {modal ? createPortal(<Modal setModal={setModal} />, modalRoot) : null}
     </AdminLayout>
   );
 }
