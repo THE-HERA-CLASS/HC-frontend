@@ -32,8 +32,10 @@ function Login() {
 
   // 요청 제출 로직
   const loginMutation = useMutation(loginPost, {
-    onSuccess: () => {
-      goHome();
+    onSuccess: (res) => {
+      if (res.status === 200) {
+        goHome();
+      }
     },
   });
   const submitHandler = (e) => {

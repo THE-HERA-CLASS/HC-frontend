@@ -1,136 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import CustomText from '../common/CustomText';
+import { useQuery } from 'react-query';
+import { majorGet, matchingCertGet } from '../../api/certificate';
+import { useNavigate } from 'react-router-dom';
 
 function CertCategory() {
-  const [isClick1, setIsClick1] = useState(false);
-  const [isClick2, setIsClick2] = useState(false);
-  const [isClick3, setIsClick3] = useState(false);
-  const [isClick4, setIsClick4] = useState(false);
+  const navigate = useNavigate();
 
+  //전공 카테고리 상태관리
+  const [selectedMajorId, setSelectedMajorId] = useState('');
+
+  //전공 가져오기
+  const { data: majorData } = useQuery('major', majorGet);
+
+  //전공에 따른 자격증 가져오기
+  const { data: certificateData } = useQuery(
+    ['matchingCertGet', selectedMajorId],
+    () => matchingCertGet(selectedMajorId),
+    {
+      enabled: selectedMajorId !== '',
+      //5분 동안 캐싱처리
+      cacheTime: 300 * 1000,
+    },
+  );
+
+  //최초 렌더링 시에 전공 제일 앞 카테고리를 스테이트로 지정
   useEffect(() => {
-    setIsClick1(true);
-  }, []);
+    if (majorData?.length > 0) {
+      setSelectedMajorId(majorData[0].major_id);
+    }
+  }, [majorData]);
 
-  const onClickMajor1 = () => {
-    setIsClick1((prev) => !prev);
-    setIsClick2(false);
-    setIsClick3(false);
-    setIsClick4(false);
+  //전공 카테고리 선택
+  const onClickHandler = (majorId) => {
+    setSelectedMajorId(majorId);
   };
-  const onClickMajor2 = () => {
-    setIsClick2((prev) => !prev);
-    setIsClick1(false);
-    setIsClick3(false);
-    setIsClick4(false);
-  };
-  const onClickMajor3 = () => {
-    setIsClick3((prev) => !prev);
-    setIsClick1(false);
-    setIsClick2(false);
-    setIsClick4(false);
-  };
-  const onClickMajor4 = () => {
-    setIsClick4((prev) => !prev);
-    setIsClick1(false);
-    setIsClick2(false);
-    setIsClick3(false);
+
+  const onCertClick = (certificateId) => {
+    navigate(`/test-list/${certificateId}`);
   };
   return (
     <CatContainer>
       <MajorCat>
-        <MajorCatItemBox isclick={isClick1 ? 'true' : 'false'} onClick={onClickMajor1}>
-          <CustomText fontSize='1.55rem' fontweight='500'>
-            컴퓨터 공학
-          </CustomText>
-        </MajorCatItemBox>
-        <MajorCatItemBox isclick={isClick2 ? 'true' : 'false'} onClick={onClickMajor2}>
-          <CustomText fontSize='1.55rem' fontweight='500'>
-            정보통신 공학
-          </CustomText>
-        </MajorCatItemBox>
-        <MajorCatItemBox isclick={isClick3 ? 'true' : 'false'} onClick={onClickMajor3}>
-          <CustomText fontSize='1.55rem' fontweight='500'>
-            정보보호학
-          </CustomText>
-        </MajorCatItemBox>
-        <MajorCatItemBox isclick={isClick4 ? 'true' : 'false'} onClick={onClickMajor4}>
-          <CustomText fontSize='1.55rem' fontweight='500'>
-            전자계산학
-          </CustomText>
-        </MajorCatItemBox>
+        {majorData?.map((major) => (
+          <MajorCatItemBox
+            key={major.major_id}
+            isclick={selectedMajorId === major.major_id ? 'true' : 'false'}
+            onClick={() => onClickHandler(major.major_id)}>
+            <CustomText value={major.major_id} fontSize='1.55rem' fontweight='500'>
+              {major.name}
+            </CustomText>
+          </MajorCatItemBox>
+        ))}
       </MajorCat>
       <CertCat>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
-        <CustomText fontSize='1.5rem' fontweight='500' color='#898989'>
-          데이터 분석기사
-        </CustomText>
+        {certificateData?.map((cert) => (
+          <CustomText
+            key={cert.certificate_id}
+            fontSize='1.5rem'
+            fontweight='500'
+            color='#898989'
+            cursor='pointer'
+            onClick={() => onCertClick(cert.certificate_id)}>
+            {cert.name}
+          </CustomText>
+        ))}
       </CertCat>
     </CatContainer>
   );
 }
+
 const CatContainer = styled.div`
   height: 309px;
-
   background: #f8faff;
   margin-bottom: 142px;
-
   border-radius: 10px;
-
   display: flex;
   flex-direction: column;
 `;
 
 const MajorCat = styled.div`
   height: 60px;
-
+  padding: 0px 110px;
   border-radius: 10px;
-
   background: #d2e6ff;
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
 
-  align-items: center;
-  justify-content: space-around;
-
+  > * {
+    flex: 0 0 25%;
+  }
   text-align: center;
 `;
 
 const CertCat = styled.div`
   height: 249px;
-
   padding-top: 40px;
   padding-left: 80px;
-
   display: flex;
   flex-wrap: wrap;
 
@@ -147,8 +114,9 @@ const MajorCatItemBox = styled.div`
   width: 170px;
   height: 50px;
   box-sizing: border-box;
-  color: ${({ isclick }) => (isclick === 'true' ? '#282897' : ' #898989')};
+  color: ${({ isclick }) => (isclick === 'true' ? '#282897' : '#898989')};
   border-bottom: ${({ isclick }) => (isclick === 'true' ? '5px solid #282897' : '')};
+  transition: border-bottom-color 0.3s ease-in-out;
 `;
 
 export default CertCategory;

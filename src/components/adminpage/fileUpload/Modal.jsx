@@ -17,9 +17,12 @@ const Modal = ({ setModal }) => {
     round: '',
     exam_id: '',
   });
-
+  console.log(select.exam_id);
   // 전공 불러오기
-  const { data: majorData } = useQuery('major', majorGet);
+  const { data: majorData } = useQuery('major', majorGet, {
+    //5분 동안 캐싱처리
+    cacheTime: 300 * 1000,
+  });
 
   // 자격증 불러오기
   const { data: certificateData } = useQuery(
@@ -27,6 +30,8 @@ const Modal = ({ setModal }) => {
     () => matchingCertGet(select.major_id),
     {
       enabled: select.major_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행
+      //5분 동안 캐싱처리
+      cacheTime: 300 * 1000,
     },
   );
 
@@ -36,6 +41,8 @@ const Modal = ({ setModal }) => {
     () => matchingSubGet(select.certificate_id),
     {
       enabled: select.certificate_id !== '', // select.certificate_id 값이 비어있지 않을 때에만 쿼리를 실행
+      //5분 동안 캐싱처리
+      cacheTime: 300 * 1000,
     },
   );
   const selectChangeHandler = (e) => {
@@ -54,6 +61,7 @@ const Modal = ({ setModal }) => {
   //ExamId 불러오는 함수
   const getExamIdMutation = useMutation(getExamIdPost, {
     onSuccess: (data) => {
+      console.log(data);
       if (data?.exam_id) {
         setSelect((prevSelect) => ({
           ...prevSelect,
@@ -75,8 +83,10 @@ const Modal = ({ setModal }) => {
 
   // 시험문제 파싱
   const parsingMutation = useMutation(questionFilePost, {
-    onSuccess: () => {
-      setModal(false);
+    onSuccess: (res) => {
+      if (res.status === 200) {
+        setModal(false);
+      }
     },
   });
 
@@ -85,7 +95,6 @@ const Modal = ({ setModal }) => {
     const formData = new FormData();
     formData.append('file', files);
     formData.append('exam_id', parseInt(select.exam_id));
-    console.log(formData);
 
     parsingMutation.mutate(formData);
   };

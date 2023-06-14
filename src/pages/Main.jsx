@@ -9,8 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import Label from '../components/main/Label';
 import CertCategory from '../components/main/CertCategory';
 import CardArea from '../components/main/cardArea/CardArea';
+import Cookies from 'js-cookie';
 
 function Main() {
+  const cookie = Cookies.get('accessToken');
+
   const navigate = useNavigate();
 
   const goSignup = () => {
@@ -18,6 +21,9 @@ function Main() {
   };
   const goLogin = () => {
     navigate('/logins');
+  };
+  const goTestList = () => {
+    navigate('/test-list');
   };
   return (
     <Layout>
@@ -31,30 +37,32 @@ function Main() {
             <CustomText fontSize='30px' fontWeight='600' fontFamily='Inter' margin='0 0 29px 0'>
               로그인하고 이용해보세요!
             </CustomText>
-            <ButtonBox>
-              <CustomBtn
-                width='180px'
-                height='54px'
-                border='3px solid #282897'
-                _borderradius='30px'
-                bc='#D2E6FF'
-                onClick={goSignup}>
-                <CustomText fontSize='1.2rem' fontWeight='700' color='#282897'>
-                  회원가입
-                </CustomText>
-              </CustomBtn>
-              <CustomBtn
-                width='180px'
-                height='54px'
-                border='3px solid #282897'
-                _borderradius='30px'
-                bc='#282897'
-                onClick={goLogin}>
-                <CustomText fontSize='1.2rem' fontWeight='700' color='#fff'>
-                  로그인
-                </CustomText>
-              </CustomBtn>
-            </ButtonBox>
+            {cookie ? null : (
+              <ButtonBox>
+                <CustomBtn
+                  width='180px'
+                  height='54px'
+                  border='3px solid #282897'
+                  _borderradius='30px'
+                  bc='#D2E6FF'
+                  onClick={goSignup}>
+                  <CustomText fontSize='1.2rem' fontWeight='700' color='#282897'>
+                    회원가입
+                  </CustomText>
+                </CustomBtn>
+                <CustomBtn
+                  width='180px'
+                  height='54px'
+                  border='3px solid #282897'
+                  _borderradius='30px'
+                  bc='#282897'
+                  onClick={goLogin}>
+                  <CustomText fontSize='1.2rem' fontWeight='700' color='#fff'>
+                    로그인
+                  </CustomText>
+                </CustomBtn>
+              </ButtonBox>
+            )}
           </TextContainer>
           <ImgBox></ImgBox>
         </ExplainBox>
@@ -71,13 +79,10 @@ function Main() {
       </TopBox>
 
       {/* 자격증별 CBT기출 문제 */}
-      <Label label='자격증별 CBT 기출문제' />
+      <Label label='자격증별 CBT 기출문제' goPage={goTestList} />
       <CertCategory />
-      {/* 최신 등록 기출문제 */}
-      <Label label='최신 등록 기출문제' />
-      <CardArea />
       {/* 북마크순 기출문제 */}
-      <Label label='북마크순 기출문제' />
+      <Label label='북마크순 기출문제' goPage={goTestList} />
       <CardArea />
     </Layout>
   );
