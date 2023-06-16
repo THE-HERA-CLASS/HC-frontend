@@ -12,19 +12,26 @@ import CardArea from '../components/main/cardArea/CardArea';
 import Cookies from 'js-cookie';
 
 function Main() {
+  // 쿠키 가져오기
   const cookie = Cookies.get('accessToken');
 
   const navigate = useNavigate();
 
+  //회원가입으로 보내기
   const goSignup = () => {
     navigate('/signups');
   };
+
+  //로그인으로 보내기
   const goLogin = () => {
     navigate('/logins');
   };
+
+  //테스트 목록 페이지로 보내기
   const goTestList = () => {
     navigate('/test-list');
   };
+
   return (
     <Layout>
       {/* 최상단 박스 */}
@@ -34,9 +41,11 @@ function Main() {
             <CustomText fontSize='35px' fontWeight='700' fontFamily='Inter'>
               맞춤형 자격증 준비 서비스
             </CustomText>
+
             <CustomText fontSize='30px' fontWeight='600' fontFamily='Inter' margin='0 0 29px 0'>
               로그인하고 이용해보세요!
             </CustomText>
+
             {cookie ? null : (
               <ButtonBox>
                 <CustomBtn
@@ -50,6 +59,7 @@ function Main() {
                     회원가입
                   </CustomText>
                 </CustomBtn>
+
                 <CustomBtn
                   width='180px'
                   height='54px'
@@ -64,15 +74,19 @@ function Main() {
               </ButtonBox>
             )}
           </TextContainer>
+
           <ImgBox></ImgBox>
         </ExplainBox>
+
         <SearchBox>
           <SearchTextBox>
             <CustomText fontSize='1.6rem' fontWeight='700' color='#fff'>
               기출문제 찾기
             </CustomText>
           </SearchTextBox>
+
           <SelectBox>
+            {/* 셀렉터로 검색 */}
             <Search />
           </SelectBox>
         </SearchBox>
@@ -80,9 +94,13 @@ function Main() {
 
       {/* 자격증별 CBT기출 문제 */}
       <Label label='자격증별 CBT 기출문제' goPage={goTestList} />
+
+      {/* 카테고리 */}
       <CertCategory />
+
       {/* 북마크순 기출문제 */}
       <Label label='북마크순 기출문제' goPage={goTestList} />
+
       <CardArea />
     </Layout>
   );

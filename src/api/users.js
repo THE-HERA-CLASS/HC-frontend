@@ -56,29 +56,11 @@ const signupPost = async (newUser) => {
 
 // 이메일 중복 체크
 const emailConfirmGet = async (email) => {
-  // const response = await api.get(`/api/emailExists/${email}`);
-  // return new Promise((resolve, reject) => {
-  //   if (response.status === 200) {
-  //     alert(response.msg);
-  //     resolve();
-  //   } else if (response.status === 201) {
-  //     alert('이미 사용중인 이메일입니다.');
-  //     reject();
-  //   } else if (response.status === 400) {
-  //     alert('예상치 못 한 오류가 발생하였습니다.');
-  //     reject();
-  //   } else {
-  //     alert(`이메일을 입력해주세요.`);
-  //     reject();
-  //   }
-  // });
-
   try {
     const response = await api.get(`/api/emailExists/${email}`);
 
     if (response.status === 200) {
       alert(`사용 가능한 이메일입니다.`);
-      /* 200으로 성공했을 때 true 혹은 Promise.resolve()를 return해줘야 함. */
       return response;
     } else if (response.status === 201) {
       alert(`이미 사용중인 이메일입니다.`);

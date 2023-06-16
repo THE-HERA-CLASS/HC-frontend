@@ -6,12 +6,14 @@ import { styled } from 'styled-components';
 import CustomText from '../components/common/CustomText';
 import CustomBtn from '../components/common/CustomBtn';
 function Login() {
-  // 로그인 성공 시 홈으로 보내기
   const navigate = useNavigate();
 
+  //홈으로 가기
   const goHome = () => {
     navigate('/');
   };
+
+  //회원가입으로 가기
   const goSignup = () => {
     navigate('/signups');
   };
@@ -22,6 +24,7 @@ function Login() {
     password: '',
   });
 
+  //userInput 핸들러
   const userInputChangeHandler = (e) => {
     const { name, value } = e.target;
     setUserInput({
@@ -30,7 +33,7 @@ function Login() {
     });
   };
 
-  // 요청 제출 로직
+  // 로그인 뮤테이션
   const loginMutation = useMutation(loginPost, {
     onSuccess: (res) => {
       if (res.status === 200) {
@@ -38,6 +41,8 @@ function Login() {
       }
     },
   });
+
+  //로그인 제출 핸들러
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -48,6 +53,7 @@ function Login() {
 
     loginMutation.mutate(user);
   };
+
   return (
     <form onSubmit={submitHandler}>
       <LoginLayout>
