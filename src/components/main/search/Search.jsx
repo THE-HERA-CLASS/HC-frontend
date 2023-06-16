@@ -7,19 +7,20 @@ import SearchIcon from '../../../Img/MainPage/search.svg';
 import SearchDown from '../../../Img/MainPage/searchdown.svg';
 
 function Search() {
-  // select태그 관리
+  // select 스테이트
   const [select, setSelect] = useState({
     major_id: '',
     certificate_id: '',
     subject_id: '',
   });
+
   // 전공 불러오기
   const { data: majorData } = useQuery('major', majorGet, {
     //5분 동안 캐싱처리
     cacheTime: 300 * 1000,
   });
 
-  // 자격증 불러오기
+  // 전공에 따른자격증 불러오기
   const { data: certificateData } = useQuery(
     ['matchingCertGet', select.major_id], // 쿼리 키에 select.major_id를 추가하여 전공 선택 시마다 쿼리를 재실행
     () => matchingCertGet(select.major_id),
@@ -30,17 +31,18 @@ function Search() {
     },
   );
 
-  // 과목 불러오기
+  // 자격증에 따른 과목 불러오기
   const { data: subjectData } = useQuery(
-    ['matchingSub', select.certificate_id], // 쿼리 키에 select.major_id를 추가하여 전공 선택 시마다 쿼리를 재실행
+    ['matchingSub', select.certificate_id], // 쿼리 키에 select.certificate_id를 추가하여 전공 선택 시마다 쿼리를 재실행
     () => matchingSubGet(select.certificate_id),
     {
-      enabled: select.certificate_id !== '', // select.major_id 값이 비어있지 않을 때에만 쿼리를 실행
+      enabled: select.certificate_id !== '', // select.certificate_id 값이 비어있지 않을 때에만 쿼리를 실행
       //5분 동안 캐싱처리
       cacheTime: 300 * 1000,
     },
   );
 
+  //selecor 핸들러
   const selectChangeHandler = (e) => {
     const { name, value } = e.target;
     setSelect({
@@ -48,6 +50,7 @@ function Search() {
       [name]: value,
     });
   };
+
   return (
     <SelectBox>
       <Select name='major_id' value={select.major_id} onChange={selectChangeHandler}>

@@ -25,11 +25,11 @@ function CertCategory() {
     },
   );
 
-  //전공 카테고리 선택
+  //전공 카테고리 클릭 핸들러
   const onClickHandler = (majorId) => {
     setSelectedMajorId(majorId);
   };
-
+  //자격증 클릭 핸들러
   const certClickHandler = (certificateId) => {
     navigate(`/test-list/${certificateId}`);
   };
@@ -40,6 +40,7 @@ function CertCategory() {
       setSelectedMajorId(majorData[0].major_id);
     }
   }, [majorData]);
+
   return (
     <CatContainer>
       <MajorCat>

@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 function TestListPages() {
   const navigate = useNavigate();
 
+  // 메인페이지 카테고리에서 원하는 자격증 클릭 시 certificateId로 해당 자격증에 맞는 시험 과목 로드를 위한 파람즈
   const { certificateId } = useParams();
 
   const { data: exams } = useQuery(['examallget', certificateId], () => examAllGet(certificateId), {

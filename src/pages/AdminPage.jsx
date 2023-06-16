@@ -17,13 +17,16 @@ function AdminPage() {
     navigate('/parsingeditor');
   };
 
+  //클릭 시 모달창 오픈
   const openModalHandler = () => {
     setModal(true);
   };
 
+  // portal사용
   const modalRoot = document.createElement('div');
   modalRoot.id = 'modal-root';
   document.body.appendChild(modalRoot);
+
   return (
     <AdminLayout>
       <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={goParsingEditor}>
@@ -41,7 +44,6 @@ function AdminPage() {
   );
 }
 
-//어드민 페이지
 const AdminLayout = styled.div`
   padding: 50px 0;
   display: flex;
