@@ -4,9 +4,11 @@ import CustomText from '../components/common/CustomText';
 import CustomBtn from '../components/common/CustomBtn';
 import { useQuery } from 'react-query';
 import { examAllGet } from '../api/posts';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function TestListPages() {
+  const navigate = useNavigate();
+
   const { certificateId } = useParams();
 
   const { data: exams } = useQuery(['examallget', certificateId], () => examAllGet(certificateId), {
@@ -19,6 +21,10 @@ function TestListPages() {
     enabled: certificateId === undefined, // 자격증 ID가 전달되지 않은 경우에만 실행
     cacheTime: 300 * 1000, // 5분 동안 캐싱 처리
   });
+
+  const goTestPage = (examId) => {
+    navigate(`/testpages/exam/${examId}`);
+  };
   return (
     <TestListLayout>
       <ListContainer>
@@ -62,7 +68,12 @@ function TestListPages() {
                   <CustomText fontSize='1.25rem'>{exam.round}</CustomText>
                 </ListItem>
                 <ListItem>
-                  <CustomBtn width='90px' height='31px' bc='#282897' _borderradius='5px'>
+                  <CustomBtn
+                    width='90px'
+                    height='31px'
+                    bc='#282897'
+                    _borderradius='5px'
+                    onClick={() => goTestPage(exam.exam_id)}>
                     <CustomText fontSize='1rem' color='#fff'>
                       응시하기
                     </CustomText>
@@ -84,7 +95,12 @@ function TestListPages() {
                   <CustomText fontSize='1.25rem'>{exam.round}</CustomText>
                 </ListItem>
                 <ListItem>
-                  <CustomBtn width='90px' height='31px' bc='#282897' _borderradius='5px'>
+                  <CustomBtn
+                    width='90px'
+                    height='31px'
+                    bc='#282897'
+                    _borderradius='5px'
+                    onClick={() => goTestPage(exam.exam_id)}>
                     <CustomText fontSize='1rem' color='#fff'>
                       응시하기
                     </CustomText>
