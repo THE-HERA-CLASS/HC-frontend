@@ -79,7 +79,7 @@ const emailConfirmGet = async (email) => {
     if (response.status === 200) {
       alert(`사용 가능한 이메일입니다.`);
       /* 200으로 성공했을 때 true 혹은 Promise.resolve()를 return해줘야 함. */
-      return response.status;
+      return response;
     } else if (response.status === 201) {
       alert(`이미 사용중인 이메일입니다.`);
     }
@@ -98,7 +98,7 @@ const nicknameConfirmGet = async (nickName) => {
     const response = await api.get(`/api/nicknameExists/${nickName}`);
     if (response.status === 200) {
       alert(`사용 가능한 닉네임입니다.`);
-      return response.status;
+      return response;
     } else if (response.status === 201) {
       alert(`이미 사용중인 닉네임입니다.`);
     }

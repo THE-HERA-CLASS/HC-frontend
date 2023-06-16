@@ -45,7 +45,7 @@ const examAllGet = async () => {
     if (e.response.status === 400) {
       alert(`알 수 없는 이유로 시험지 조회를 할 수 없습니다.`);
     } else {
-      alert(`시허험지 조회 실패`);
+      alert(`시험지 조회 실패`);
     }
   }
 };

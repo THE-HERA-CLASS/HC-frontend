@@ -132,8 +132,7 @@ function Signup() {
   //이메일 중복 체크 핸들러
   const emailConfirmClick = async () => {
     const response = await emailConfirmGet(email);
-    console.log(response);
-    if (response === 200) {
+    if (response.status === 200) {
       //중복 체크 후 바로 인증코드 발송
       authEmaliMutation.mutate({ email });
     }
@@ -142,7 +141,7 @@ function Signup() {
   //닉네임 중복 체크 핸들러
   const nicknameConfirmHandler = async () => {
     const response = await nicknameConfirmGet(nickname);
-    if (response === 200) {
+    if (response.status === 200) {
       setExistsNickname(true);
     }
   };

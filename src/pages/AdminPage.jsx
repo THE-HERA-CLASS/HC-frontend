@@ -17,9 +17,10 @@ function AdminPage() {
     navigate('/parsingeditor');
   };
 
-  const modalHandler = () => {
+  const openModalHandler = () => {
     setModal(true);
   };
+
   const modalRoot = document.createElement('div');
   modalRoot.id = 'modal-root';
   document.body.appendChild(modalRoot);
@@ -30,7 +31,7 @@ function AdminPage() {
           에디터로 등록
         </CustomText>
       </CustomBtn>
-      <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={modalHandler}>
+      <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={openModalHandler}>
         <CustomText fontSize='2.5rem' fontWeight='700' color='#fff'>
           파일로 등록
         </CustomText>
