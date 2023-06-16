@@ -15,7 +15,7 @@ function CertCategory() {
   const { data: majorData } = useQuery('major', majorGet);
 
   //전공에 따른 자격증 가져오기
-  const { data: certificateData } = useQuery(
+  const { data: certificateData, isLoading } = useQuery(
     ['matchingCertGet', selectedMajorId],
     () => matchingCertGet(selectedMajorId),
     {
@@ -25,47 +25,54 @@ function CertCategory() {
     },
   );
 
+  //전공 카테고리 선택
+  const onClickHandler = (majorId) => {
+    setSelectedMajorId(majorId);
+  };
+
+  const certClickHandler = (certificateId) => {
+    navigate(`/test-list/${certificateId}`);
+  };
+
   //최초 렌더링 시에 전공 제일 앞 카테고리를 스테이트로 지정
   useEffect(() => {
     if (majorData?.length > 0) {
       setSelectedMajorId(majorData[0].major_id);
     }
   }, [majorData]);
-
-  //전공 카테고리 선택
-  const onClickHandler = (majorId) => {
-    setSelectedMajorId(majorId);
-  };
-
-  const onCertClick = (certificateId) => {
-    navigate(`/test-list/${certificateId}`);
-  };
   return (
     <CatContainer>
       <MajorCat>
         {majorData?.map((major) => (
-          <MajorCatItemBox
-            key={major.major_id}
-            isclick={selectedMajorId === major.major_id ? 'true' : 'false'}
-            onClick={() => onClickHandler(major.major_id)}>
-            <CustomText value={major.major_id} fontSize='1.55rem' fontweight='500'>
+          <MajorCatItemBox key={major.major_id} isclick={selectedMajorId === major.major_id ? 'true' : 'false'}>
+            <CustomText
+              value={major.major_id}
+              fontSize='1.55rem'
+              fontweight='500'
+              onClick={() => onClickHandler(major.major_id)}>
               {major.name}
             </CustomText>
           </MajorCatItemBox>
         ))}
       </MajorCat>
       <CertCat>
-        {certificateData?.map((cert) => (
-          <CustomText
-            key={cert.certificate_id}
-            fontSize='1.5rem'
-            fontweight='500'
-            color='#898989'
-            cursor='pointer'
-            onClick={() => onCertClick(cert.certificate_id)}>
-            {cert.name}
-          </CustomText>
-        ))}
+        <CertCatWrapper>
+          {isLoading ? (
+            <div>자격증을 불러오는 중 입니다.</div>
+          ) : (
+            certificateData?.map((cert) => (
+              <CustomText
+                key={cert.certificate_id}
+                fontSize='1.5rem'
+                fontweight='500'
+                color='#898989'
+                cursor='pointer'
+                onClick={() => certClickHandler(cert.certificate_id)}>
+                {cert.name}
+              </CustomText>
+            ))
+          )}
+        </CertCatWrapper>
       </CertCat>
     </CatContainer>
   );
@@ -82,7 +89,7 @@ const CatContainer = styled.div`
 
 const MajorCat = styled.div`
   height: 60px;
-  padding: 0px 110px;
+  padding: 0px 50px;
   border-radius: 10px;
   background: #d2e6ff;
   display: flex;
@@ -97,12 +104,25 @@ const MajorCat = styled.div`
 const CertCat = styled.div`
   height: 249px;
   padding-top: 40px;
-  padding-left: 80px;
+`;
+
+const CertCatWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  text-align: center;
 
   > * {
-    flex: 0 0 27%;
+    flex: 0 0 25%;
+    cursor: pointer;
+    color: #898989;
+    font-size: 1.5rem;
+    font-weight: 500;
+    height: 50px;
+    transition: color 0.3s ease-in-out;
+
+    &:hover {
+      color: #282897;
+    }
   }
 `;
 
@@ -111,12 +131,27 @@ const MajorCatItemBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 170px;
+  width: fit-content;
   height: 50px;
   box-sizing: border-box;
   color: ${({ isclick }) => (isclick === 'true' ? '#282897' : '#898989')};
-  border-bottom: ${({ isclick }) => (isclick === 'true' ? '5px solid #282897' : '')};
-  transition: border-bottom-color 0.3s ease-in-out;
+  position: relative;
+
+  > * {
+    font-size: ${({ isclick }) => (isclick === 'true' ? '1.55rem' : '1.4rem')};
+    font-weight: ${({ isclick }) => (isclick === 'true' ? '700' : '500')};
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: ${({ isclick }) => (isclick === 'true' ? '100%' : '0')};
+    height: 3px;
+    background-color: #282897;
+    transition: width 0.3s ease-in-out;
+  }
 `;
 
 export default CertCategory;

@@ -17,7 +17,6 @@ const Modal = ({ setModal }) => {
     round: '',
     exam_id: '',
   });
-  console.log(select.exam_id);
   // 전공 불러오기
   const { data: majorData } = useQuery('major', majorGet, {
     //5분 동안 캐싱처리
@@ -45,6 +44,7 @@ const Modal = ({ setModal }) => {
       cacheTime: 300 * 1000,
     },
   );
+
   const selectChangeHandler = (e) => {
     const { name, value } = e.target;
     setSelect((prevSelect) => ({
@@ -61,7 +61,6 @@ const Modal = ({ setModal }) => {
   //ExamId 불러오는 함수
   const getExamIdMutation = useMutation(getExamIdPost, {
     onSuccess: (data) => {
-      console.log(data);
       if (data?.exam_id) {
         setSelect((prevSelect) => ({
           ...prevSelect,
@@ -99,9 +98,19 @@ const Modal = ({ setModal }) => {
     parsingMutation.mutate(formData);
   };
 
+  const closeModal = () => {
+    setModal(false);
+  };
+
+  const handleClickOutside = (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+
   return createPortal(
     <form onSubmit={onSubmitHandler}>
-      <Background>
+      <Background onClick={handleClickOutside}>
         <ModalLayout>
           <SelectBox name='major_id' value={select.major_id} onChange={selectChangeHandler}>
             <option value='' disabled hidden>
@@ -152,7 +161,15 @@ const Modal = ({ setModal }) => {
           </div>
 
           <input type='file' onChange={ChangeFileHandler} />
-          <input type='number' name='exam_id' placeholder='examId를 입력해주세요.' onChange={selectChangeHandler} />
+
+          <input
+            type='number'
+            value={select.exam_id}
+            name='exam_id'
+            placeholder='examId를 입력해주세요.'
+            onChange={selectChangeHandler}
+          />
+
           <div style={{ display: 'flex', gap: '10px' }}>
             <CustomBtn
               type='button'
@@ -199,10 +216,13 @@ const Background = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 `;
 
 const SelectBox = styled.select`
