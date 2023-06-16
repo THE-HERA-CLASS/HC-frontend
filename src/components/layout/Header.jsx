@@ -13,30 +13,37 @@ function Header() {
   const userAuth = JSON.parse(userInfo)?.authority;
   const navigate = useNavigate();
 
+  //홈으로 가기
   const goHome = () => {
     navigate('/');
   };
 
+  // 회원가입으로 가기
   const goSignup = () => {
     navigate('/signups');
   };
 
+  //로그인으로 가기
   const goLogin = () => {
     navigate('/logins');
   };
 
+  //마이페이지로 가기
   const goUserMyPage = () => {
     navigate('/usermypages');
   };
 
+  //관리자페이지로 가기
   const goAdmin = () => {
     navigate('/adminpages');
   };
 
+  // 모근 테스트 목록 페이지로 가기
   const goTestList = () => {
     navigate('/test-list');
   };
 
+  //로그아웃 뮤테이션
   const LogoutMutation = useMutation(LogoutDelete, {
     onSuccess: () => {
       Cookies.remove('accessToken');
@@ -44,6 +51,8 @@ function Header() {
       goHome();
     },
   });
+
+  //로그아웃 핸들러
   const LogoutHandler = () => {
     LogoutMutation.mutate();
   };
@@ -86,56 +95,58 @@ function Header() {
           실전연습
         </CustomText>
 
-        {userAuth === 'C' ? (
-          <CustomText
-            fontSize='15px'
-            fontWeight='600'
-            fontFamily='Plus Jakarta Sans'
-            color='#1A202C'
-            cursor='pointer'
-            onClick={goUserMyPage}>
-            마이페이지
-          </CustomText>
-        ) : null}
-
-        {userAuth === 'C' ? null : (
-          <CustomText
-            fontSize='15px'
-            fontWeight='600'
-            fontFamily='Plus Jakarta Sans'
-            color='#1A202C'
-            cursor='pointer'
-            onClick={goAdmin}>
-            문제관리
-          </CustomText>
-        )}
-
-        <Divider />
-
-        <CustomText
-          fontSize='15px'
-          fontWeight='600'
-          fontFamily='Inter'
-          color='#282897'
-          textDecoration='underline'
-          opacity='0.75'
-          cursor='pointer'
-          onClick={goSignup}>
-          회원가입
-        </CustomText>
-
         {cookie ? (
-          <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
-            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={LogoutHandler}>
-              로그아웃
-            </CustomText>
-          </CustomBtn>
+          <>
+            {userAuth === 'A' ? (
+              <CustomText
+                fontSize='15px'
+                fontWeight='600'
+                fontFamily='Plus Jakarta Sans'
+                color='#1A202C'
+                cursor='pointer'
+                onClick={goAdmin}>
+                문제관리
+              </CustomText>
+            ) : (
+              <CustomText
+                fontSize='15px'
+                fontWeight='600'
+                fontFamily='Plus Jakarta Sans'
+                color='#1A202C'
+                cursor='pointer'
+                onClick={goUserMyPage}>
+                마이페이지
+              </CustomText>
+            )}
+
+            <Divider />
+            <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
+              <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={LogoutHandler}>
+                로그아웃
+              </CustomText>
+            </CustomBtn>
+          </>
         ) : (
-          <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
-            <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogin}>
-              로그인
+          <>
+            <Divider />
+
+            <CustomText
+              fontSize='15px'
+              fontWeight='600'
+              fontFamily='Inter'
+              color='#282897'
+              textDecoration='underline'
+              opacity='0.75'
+              cursor='pointer'
+              onClick={goSignup}>
+              회원가입
             </CustomText>
-          </CustomBtn>
+            <CustomBtn width='82px' height='38px' bc='#282897' _borderradius='4px'>
+              <CustomText fontSize='15px' fontWeight='500' fontFamily='Inter' color='#fff' onClick={goLogin}>
+                로그인
+              </CustomText>
+            </CustomBtn>
+          </>
         )}
       </MenuWrap>
     </Container>
