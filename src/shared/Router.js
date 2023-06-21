@@ -27,6 +27,7 @@ function Router() {
         <Route path='/searchresultpage' element={<SearchResultPage />} />
         <Route path='/test-list' element={<TestListPages />} />
         <Route path='/test-list/:certificateId' element={<TestListPages />} />
+        <Route path='/test-list/subject/:subjectId' element={<TestListPages />} />
         <Route path='/parsingeditor' element={<ParsingEditor />} />
         <Route path='/exameditor' element={<ExamEditor />} />
       </Routes>

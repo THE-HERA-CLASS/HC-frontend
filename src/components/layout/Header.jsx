@@ -38,7 +38,7 @@ function Header() {
     navigate('/adminpages');
   };
 
-  // 모근 테스트 목록 페이지로 가기
+  // 모든 테스트 목록 페이지로 가기
   const goTestList = () => {
     navigate('/test-list');
   };
