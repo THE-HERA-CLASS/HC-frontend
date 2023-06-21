@@ -5,8 +5,10 @@ import { majorGet, matchingCertGet, matchingSubGet } from '../../../api/certific
 import { useQuery } from 'react-query';
 import SearchIcon from '../../../Img/MainPage/search.svg';
 import SearchDown from '../../../Img/MainPage/searchdown.svg';
+import { useNavigate } from 'react-router-dom';
 
 function Search() {
+  const navigate = useNavigate();
   // select 스테이트
   const [select, setSelect] = useState({
     major_id: '',
@@ -51,6 +53,9 @@ function Search() {
     });
   };
 
+  const searchHandler = (subjectId) => {
+    navigate(`/test-list/subject/${subjectId}`);
+  };
   return (
     <SelectBox>
       <Select name='major_id' value={select.major_id} onChange={selectChangeHandler}>
@@ -96,7 +101,12 @@ function Search() {
         })}
       </Select>
 
-      <CustomBtn width='116px' height='74px' _borderradius='0 10px 10px 0' bc='#282897'>
+      <CustomBtn
+        width='116px'
+        height='74px'
+        _borderradius='0 10px 10px 0'
+        bc='#282897'
+        onClick={() => searchHandler(select.subject_id)}>
         <img src={SearchIcon} alt='' />
       </CustomBtn>
     </SelectBox>
