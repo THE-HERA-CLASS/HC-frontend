@@ -11,6 +11,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ParsingEditor from '../pages/ParsingEditor';
 import TestListPages from '../pages/TestListPages';
+import ExamEditor from '../pages/ExamEditor';
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
         <Route path='/test-list' element={<TestListPages />} />
         <Route path='/test-list/:certificateId' element={<TestListPages />} />
         <Route path='/parsingeditor' element={<ParsingEditor />} />
+        <Route path='/exameditor' element={<ExamEditor />} />
       </Routes>
       <FooterConditionalRender />
     </BrowserRouter>
