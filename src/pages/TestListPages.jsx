@@ -2,25 +2,51 @@ import React from 'react';
 import { styled } from 'styled-components';
 import CustomText from '../components/common/CustomText';
 import CustomBtn from '../components/common/CustomBtn';
-import { useQuery } from 'react-query';
-import { examAllGet } from '../api/posts';
+import { useQuery, useQueryClient } from 'react-query';
+import { certIdExamGet, examAllGet, subIdExamGet } from '../api/posts';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function TestListPages() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // 메인페이지 카테고리에서 원하는 자격증 클릭 시 certificateId로 해당 자격증에 맞는 시험 과목 로드를 위한 파람즈
-  const { certificateId } = useParams();
+  const { certificateId, subjectId } = useParams();
 
-  const { data: exams } = useQuery(['examallget', certificateId], () => examAllGet(certificateId), {
+  //메인 페이지의 카테고리 클릭으로 들어오면 해당 자격증의 모든 문제를 모두 보여주는 함수
+  const { data: certExams } = useQuery(['examcertget', certificateId], () => certIdExamGet(certificateId), {
     // 자격증 ID가 있을 경우에만 가져옴
     enabled: certificateId ? true : false,
     // 5분 동안 캐싱 처리
     cacheTime: 300 * 1000,
+    // 데이터를 가져온 후 실행될 로직 추가
+    onSuccess: () => {
+      queryClient.removeQueries('examallget');
+      queryClient.removeQueries(['examsubget', subjectId]);
+    },
   });
+
+  // 헤더의 기출문제 클릭으로 들어왔을 때 모든 문제를 보여주는 함수
   const { data: allExams } = useQuery('examallget', examAllGet, {
-    enabled: certificateId === undefined, // 자격증 ID가 전달되지 않은 경우에만 실행
+    enabled: certificateId === undefined && subjectId === undefined, // certificateId와 subjectId가 모두 undefined일 때만 실행
     cacheTime: 300 * 1000, // 5분 동안 캐싱 처리
+    // 데이터를 가져온 후 실행될 로직 추가
+    onSuccess: () => {
+      queryClient.removeQueries(['examcertget', certificateId]);
+      queryClient.removeQueries(['examsubget', subjectId]);
+    },
+  });
+
+  // 메인페이지의 검색기능으로 들어오면 해당 과목 문제를 보여주는 함수
+  const { data: subExams } = useQuery(['examsubget', subjectId], () => subIdExamGet(subjectId), {
+    // 과목 ID가 있을 경우에만 가져옴
+    enabled: subjectId ? true : false,
+    // 5분 동안 캐싱 처리
+    cacheTime: 300 * 1000,
+    // 데이터를 가져온 후 실행될 로직 추가
+    onSuccess: () => {
+      queryClient.removeQueries(['examcertget', certificateId]);
+      queryClient.removeQueries('examallget');
+    },
   });
 
   const goTestPage = (examId) => {
@@ -56,7 +82,7 @@ function TestListPages() {
             </HeaderItem>
           </ListBoxHeader>
 
-          {exams?.map((exam) => {
+          {certExams?.map((exam) => {
             return (
               <TestList key={exam.exam_id}>
                 <ListItem>
@@ -84,6 +110,33 @@ function TestListPages() {
             );
           })}
           {allExams?.map((exam) => {
+            return (
+              <TestList key={exam.exam_id}>
+                <ListItem>
+                  <CustomText fontSize='1.25rem'>{exam.subject_name}</CustomText>
+                </ListItem>
+                <ListItem>
+                  <CustomText fontSize='1.25rem'>{exam.year}</CustomText>
+                </ListItem>
+                <ListItem>
+                  <CustomText fontSize='1.25rem'>{exam.round}</CustomText>
+                </ListItem>
+                <ListItem>
+                  <CustomBtn
+                    width='90px'
+                    height='31px'
+                    bc='#282897'
+                    _borderradius='5px'
+                    onClick={() => goTestPage(exam.exam_id)}>
+                    <CustomText fontSize='1rem' color='#fff'>
+                      응시하기
+                    </CustomText>
+                  </CustomBtn>
+                </ListItem>
+              </TestList>
+            );
+          })}
+          {subExams?.map((exam) => {
             return (
               <TestList key={exam.exam_id}>
                 <ListItem>

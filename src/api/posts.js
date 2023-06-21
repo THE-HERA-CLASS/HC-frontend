@@ -40,6 +40,7 @@ const getExamIdPost = async (formData) => {
 const examAllGet = async () => {
   try {
     const response = await api.get(`/api/exam`);
+    console.log(response.data.data);
     return response.data.data;
   } catch (e) {
     if (e.response.status === 400) {
@@ -49,4 +50,30 @@ const examAllGet = async () => {
     }
   }
 };
-export { questionFilePost, getExamIdPost, examAllGet };
+
+//자격증 아이디로 시험지 찾기
+const certIdExamGet = async (certId) => {
+  try {
+    const response = await api.get(`/api/exam/certificate/${certId}`);
+    console.log(response.data.data);
+    if (response.status === 200) {
+      return response.data.data;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 과목 아이디로 시험지 찾기
+const subIdExamGet = async (subId) => {
+  try {
+    const response = await api.get(`/api/exam/subject/${subId}`);
+    console.log(response.data.data);
+    if (response.status === 200) {
+      return response.data.data;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+export { questionFilePost, getExamIdPost, examAllGet, subIdExamGet, certIdExamGet };
