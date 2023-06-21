@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../axios/api";
 import ResultModal from "../components/testpage/ResultModal";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 // 문제 카드 컴포넌트를 정의. 각 문제를 보여주는 역할.
 const QuestionCard = ({ questionData, showExplanation, showAnswer }) => {
@@ -16,7 +16,12 @@ const QuestionCard = ({ questionData, showExplanation, showAnswer }) => {
       <h2>
         {questionData.question_num}. {questionData.question}
       </h2>
-      {questionData.example && <p>{questionData.example}</p>}
+      {questionData.example &&
+        questionData.example.map((item, index) => (
+          <div key={index}>
+            <p>{item.value}</p>
+          </div>
+        ))}
       {questionData.choice.map((item, index) => (
         <div key={index}>
           <p>
@@ -24,8 +29,10 @@ const QuestionCard = ({ questionData, showExplanation, showAnswer }) => {
           </p>
         </div>
       ))}
-      {showAnswer && <p>정답: {questionData.answer}</p>} {/* showAnswer가 true일 때만 정답을 보여줍니다. */}
-      {showExplanation && <p>{questionData.solve}</p>} {/* showExplanation이 true일 때만 풀이를 보여줍니다. */}
+      {showAnswer && <p>정답: {questionData.answer}</p>}
+      {/* showAnswer가 true일 때만 정답을 보여줍니다. */}
+      {showExplanation && <p>{questionData.solve}</p>}
+      {/* showExplanation이 true일 때만 풀이를 보여줍니다. */}
     </div>
   );
 };
@@ -88,8 +95,8 @@ function TestPage() {
   console.log(id);
 
   const navigate = useNavigate();
-  const accessToken = Cookies.get('accessToken');
-  console.log(accessToken); 
+  const accessToken = Cookies.get("accessToken");
+  console.log(accessToken);
 
   // 페이지가 로드되면 서버에서 문제 데이터 가져오기
   useEffect(() => {
@@ -97,14 +104,14 @@ function TestPage() {
       try {
         if (!accessToken) {
           // 토큰이 없으면 로그인 페이지로 리디렉션
-          navigate('/login');
+          navigate("/login");
         } else {
           const response = await api.get(
             `${process.env.REACT_APP_SERVER_URL}/api/question/exam/${id}`,
             {
               headers: {
-                Authorization: `Bearer ${accessToken}`
-              }
+                Authorization: `Bearer ${accessToken}`,
+              },
             }
           );
           console.log(response.data);
@@ -118,8 +125,8 @@ function TestPage() {
     fetchData();
   }, [id, accessToken, navigate]);
 
-   // "오답노트 확인하기" 버튼을 누르면 실행되는 함수
-   const handleCheckNote = () => {
+  // "오답노트 확인하기" 버튼을 누르면 실행되는 함수
+  const handleCheckNote = () => {
     setShowAnswer(true);
     setShowExplanation(true); // set to true when "Check Note" button is clicked
     setIsModalVisible(false); // Close the modal
@@ -142,9 +149,11 @@ function TestPage() {
 
     // 서버에 제출할 답안 데이터를 만듭니다.
     api
-    .post(`${process.env.REACT_APP_SERVER_URL}/api/submitAnswer`, submitData,
-    { headers: { 'accesstoken': accessToken } }
-    )
+      .post(
+        `${process.env.REACT_APP_SERVER_URL}/api/submitAnswer`,
+        submitData,
+        { headers: { accesstoken: accessToken } }
+      )
       .then((response) => {
         console.log(response.data);
         // 제출 결과 저장
@@ -186,7 +195,12 @@ function TestPage() {
           {testContent ? (
             <div>
               {testContent.map((item, index) => (
-                <QuestionCard key={index} questionData={item} showExplanation={showExplanation} showAnswer={showAnswer}/>
+                <QuestionCard
+                  key={index}
+                  questionData={item}
+                  showExplanation={showExplanation}
+                  showAnswer={showAnswer}
+                />
               ))}
             </div>
           ) : (
