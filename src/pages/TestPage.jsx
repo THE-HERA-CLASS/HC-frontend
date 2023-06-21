@@ -5,17 +5,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../axios/api";
 import ResultModal from "../components/testpage/ResultModal";
 import Cookies from "js-cookie";
+import checkO from "../Img/TestPage/check-O.png";
+import checkX from "../Img/TestPage/check-X.png";
 
 // 문제 카드 컴포넌트를 정의. 각 문제를 보여주는 역할.
-const QuestionCard = ({ questionData, showExplanation, showAnswer }) => {
+const QuestionCard = ({ questionData, showExplanation, showAnswer, markingImage }) => {
   const optionChar = ["①", "②", "③", "④"];
   const correctAnswer = optionChar[questionData.correct - 1];
 
   return (
-    <div>
-      <h2>
+      <QuestionCardWrapper>
+      {showAnswer && <MarkingImage src={markingImage} alt="Marking Result" style={{top: "-40px", left: "-40px"}}/>}
+      <p>
         {questionData.question_num}. {questionData.question}
-      </h2>
+      </p>
       {questionData.example &&
         questionData.example.map((item, index) => (
           <div key={index}>
@@ -30,10 +33,10 @@ const QuestionCard = ({ questionData, showExplanation, showAnswer }) => {
         </div>
       ))}
       {showAnswer && <p>정답: {questionData.answer}</p>}
-      {/* showAnswer가 true일 때만 정답을 보여줍니다. */}
-      {showExplanation && <p>{questionData.solve}</p>}
-      {/* showExplanation이 true일 때만 풀이를 보여줍니다. */}
-    </div>
+      {/* showAnswer가 true일 때만 정답을 보여줌. */}
+      {showExplanation && <SolveText>{questionData.solve}</SolveText>}
+      {/* showExplanation이 true일 때만 풀이를 보여줌. */}
+      </QuestionCardWrapper>
   );
 };
 
@@ -83,20 +86,23 @@ const AnswerChoices = ({ numbers, selected, setSelected }) => {
 // 테스트 페이지 컴포넌트를 정의
 function TestPage() {
   const [zoom, setZoom] = useState(100);
-  const [viewStyle, setViewStyle] = useState("scroll"); // initial view style is 'scroll'
+  const [viewStyle, setViewStyle] = useState("scroll");
   const [testContent, setTestContent] = useState(null);
   const [selected, setSelected] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [markingImages, setMarkingImages] = useState([]);
 
   const { id } = useParams();
-  console.log(id);
 
   const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
-  console.log(accessToken);
+
+  useEffect(() => {
+    console.log("submitResult has been updated", submitResult);
+  }, [submitResult]);
 
   // 페이지가 로드되면 서버에서 문제 데이터 가져오기
   useEffect(() => {
@@ -104,7 +110,7 @@ function TestPage() {
       try {
         if (!accessToken) {
           // 토큰이 없으면 로그인 페이지로 리디렉션
-          navigate("/login");
+          navigate("/logins");
         } else {
           const response = await api.get(
             `${process.env.REACT_APP_SERVER_URL}/api/question/exam/${id}`,
@@ -114,8 +120,10 @@ function TestPage() {
               },
             }
           );
+
           console.log(response.data);
-          setTestContent(response.data.data);
+          setTestContent(response.data.data); // 문제 데이터를 설정
+          setSelected(new Array(response.data.data.length).fill(null)); // 문제 수와 같은 크기의 배열을 생성하고 모든 원소를 null로 초기화
         }
       } catch (error) {
         console.error("Failed to fetch the test content", error);
@@ -126,18 +134,45 @@ function TestPage() {
   }, [id, accessToken, navigate]);
 
   // "오답노트 확인하기" 버튼을 누르면 실행되는 함수
-  const handleCheckNote = () => {
-    setShowAnswer(true);
-    setShowExplanation(true); // set to true when "Check Note" button is clicked
-    setIsModalVisible(false); // Close the modal
+  const handleCheckNote = async () => {
+    try {
+      const response = await api.get(`/api/getAnswerWithExamId/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = response.data.data;
+      console.log(data);
+
+      setShowAnswer(true);
+      setShowExplanation(true);
+      setIsModalVisible(false);
+
+      const markingImages = [];
+
+      // marking 값을 확인하여 이미지 렌더링
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].marking) {
+          markingImages.push(checkO);
+        } else {
+          markingImages.push(checkX);
+        }
+      }
+
+      setMarkingImages(markingImages);
+    } catch (error) {
+      console.error("Failed to get the marking data", error);
+    }
   };
 
   // 사용자가 '제출' 버튼을 누르면 서버에 답안을 제출
   const handleSubmit = () => {
+    console.log("handleSubmit function is called");
     console.log(selected);
 
     const data = selected.map((answerIndex, questionIndex) => ({
-      question_id: testContent[questionIndex].question_num,
+      question_id: testContent[questionIndex].question_id,
       answer: (answerIndex + 1).toString(),
     }));
 
@@ -147,7 +182,7 @@ function TestPage() {
       data: data,
     };
 
-    // 서버에 제출할 답안 데이터를 만듭니다.
+    // 서버에 제출할 답안 데이터를 전송
     api
       .post(
         `${process.env.REACT_APP_SERVER_URL}/api/submitAnswer`,
@@ -155,7 +190,7 @@ function TestPage() {
         { headers: { accesstoken: accessToken } }
       )
       .then((response) => {
-        console.log(response.data);
+        console.log("Submit response: ", response);
         // 제출 결과 저장
         setSubmitResult(response.data);
         // 모달 보이기
@@ -169,39 +204,50 @@ function TestPage() {
 
   return (
     <>
-      <Toolbar>
-        <div>
-          Zoom:
-          <button onClick={() => setZoom(80)}>80%</button>
-          <button onClick={() => setZoom(100)}>100%</button>
-          <button onClick={() => setZoom(150)}>150%</button>
-          <div>Current Zoom: {zoom}%</div>
-        </div>
+      {/* <Toolbar> */}
 
-        <div>
+      {/* <div>
           View Style:
           <button onClick={() => setViewStyle("scroll")}>Scroll</button>
           <button onClick={() => setViewStyle("pagination")}>Pagination</button>
           <div>Current View Style: {viewStyle}</div>
-        </div>
+        </div> */}
 
-        <button>Bookmark</button>
+      {/* <button>Bookmark</button>
         <button>Increase Text Size</button>
-        <button>Exit</button>
-      </Toolbar>
+        <button>Exit</button> */}
+      {/* </Toolbar> */}
 
       <TestArea>
         <TestPageArea>
           {testContent ? (
-            <div>
-              {testContent.map((item, index) => (
-                <QuestionCard
-                  key={index}
-                  questionData={item}
-                  showExplanation={showExplanation}
-                  showAnswer={showAnswer}
-                />
-              ))}
+            <div style={{ display: "flex" }}>
+              <Column>
+                {testContent
+                  .filter((_, index) => index % 2 === 0)
+                  .map((item, index) => (
+                    <QuestionCard
+                      key={index}
+                      questionData={item}
+                      showExplanation={showExplanation}
+                      showAnswer={showAnswer}
+                      markingImage={markingImages[index]}
+                    />
+                  ))}
+              </Column>
+              <Column>
+                {testContent
+                  .filter((_, index) => index % 2 !== 0)
+                  .map((item, index) => (
+                    <QuestionCard
+                      key={index}
+                      questionData={item}
+                      showExplanation={showExplanation}
+                      showAnswer={showAnswer}
+                      markingImage={markingImages[index]}
+                    />
+                  ))}
+              </Column>
             </div>
           ) : (
             "Loading..."
@@ -245,6 +291,20 @@ function TestPage() {
   );
 }
 
+const QuestionCardWrapper = styled.div`
+  position: relative;
+`;
+
+const MarkingImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
+const SolveText = styled.p`
+  margin-bottom: 35px;
+`;
+
 const Toolbar = styled.div`
   position: absolute;
   width: 1920px;
@@ -266,6 +326,33 @@ const TestArea = styled.div`
   background: #f8faff;
 `;
 
+const Column = styled.div`
+  flex: 1;
+  position: relative;
+  margin-right: 50px; // 필요하다면 오른쪽 마진을 추가
+  margin-left: 50px;
+  margin-top: 50px;
+  &:first-child {
+    padding-right: 50px;
+  }
+  &:last-child {
+    margin-right: 50; // 마지막 column은 오른쪽 마진 없음
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: calc(520% + 50px);
+    width: 1px;
+    right: 0;
+    top: 0px;
+    background-color: rgba(137, 137, 137, 1);
+  }
+
+  &:last-child::after {
+    content: none;
+  }
+`;
+
 const TestPageArea = styled.div`
   position: absolute;
   width: 1416px;
@@ -274,6 +361,9 @@ const TestPageArea = styled.div`
   top: 0px;
   background: #ffffff;
   overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const AnswerArea = styled.div`
@@ -287,7 +377,7 @@ const AnswerArea = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  overflow: auto; // in case the content exceeds the area height
+  overflow: auto;
 `;
 
 const AnswerHeader = styled.div`
@@ -306,8 +396,8 @@ const AnswerHeaderText = styled.div`
   position: absolute;
   width: auto;
   height: 30px;
-  left: 121.5px; // to center it within the AnswerHeader
-  top: 15px; // to center it within the AnswerHeader
+  left: 121.5px;
+  top: 15px;
 
   font-family: "Inter", sans-serif;
   font-style: normal;
@@ -336,7 +426,7 @@ const AnswerNumber = styled.span`
   position: absolute;
   width: 9px;
   height: 0px;
-  left: 1px;
+  left: 27px;
   top: ${(props) => props.index * 33.5 + 16}px;
 
   font-family: "Inter";
@@ -348,7 +438,8 @@ const AnswerNumber = styled.span`
 
   display: flex;
   align-items: center;
-  letter-spacing: 0.5em;
+  letter-spacing: 0em;
+  justify-content: center;
 
   color: #ffffff;
 `;
@@ -362,15 +453,14 @@ const AnswerChoice = styled.span`
   font-weight: 600;
   font-size: 27px;
   line-height: 150%;
-  color: ${(props) => (props.selected ? "#00FF00" : "#282897")};
+  color: ${(props) => (props.selected ? "red" : "#282897")};
   cursor: pointer;
   margin-left: 15px;
   margin-bottom: 5px;
   margin-top: 0px;
 
-  // 상자의 크기를 조정합니다.
-  width: 27px; // 원하는 너비로 설정하세요.
-  height: 28.5px; // 원하는 높이로 설정하세요.
+  width: 27px;
+  height: 28.5px;
 `;
 
 const BottomBar = styled.div`
@@ -393,7 +483,7 @@ const ChoiceContainer = styled.div`
   margin-bottom: 1px;
 
   // & > div {
-  //   margin-bottom: -30px; // Adjust this to change the gap between rows
+  //   margin-bottom: -30px;
   //   height: 62px;
   // }
 `;

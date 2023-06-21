@@ -18,10 +18,10 @@ const ResultModal = ({ children, open, onClose, onCheckNote, id }) => {
 
     const fetchData = async () => {
       try {
-        const accessToken = Cookies.get("accessToken"); // 쿠키에서 accessToken을 가져옵니다.
+        const accessToken = Cookies.get("accessToken");
         const response = await api.get(`/api/exam/${id}`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`, // 가져온 토큰을 사용합니다.
+            Authorization: `Bearer ${accessToken}`,
           },
         });
         console.log(response.data);
@@ -36,8 +36,10 @@ const ResultModal = ({ children, open, onClose, onCheckNote, id }) => {
           });
     
           const data = responseAnswer.data.data;
-          const total = Math.max(...data.map(item => item.question_id));
+          const total = data.length;
           const correct = data.filter(item => item.marking).length;
+
+          console.log(data);
     
           setTotal(total);
           setCorrect(correct);
