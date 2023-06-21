@@ -17,7 +17,6 @@ const Modal = ({ setModal }) => {
     round: '',
     exam_id: '',
   });
-  console.log(select);
 
   //문제 파일 상태 관리
   const [files, setFiles] = useState(null);
