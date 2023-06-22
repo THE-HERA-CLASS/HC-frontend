@@ -30,7 +30,8 @@ function Header() {
 
   //마이페이지로 가기
   const goUserMyPage = () => {
-    navigate('/usermypages');
+    alert(`이 서비스는 준비 중 입니다.`);
+    // navigate('/usermypages');
   };
 
   //관리자페이지로 가기
@@ -89,10 +90,6 @@ function Header() {
           cursor='pointer'
           onClick={goTestList}>
           기출문제
-        </CustomText>
-
-        <CustomText fontSize='15px' fontWeight='600' fontFamily='Plus Jakarta Sans' color='#1A202C' cursor='pointer'>
-          실전연습
         </CustomText>
 
         {cookie ? (
