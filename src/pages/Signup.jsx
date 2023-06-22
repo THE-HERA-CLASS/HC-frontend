@@ -152,8 +152,10 @@ function Signup() {
 
   // 이메일 인증 뮤테이션
   const verifyMailMutation = useMutation(verifyMailPost, {
-    onSuccess: () => {
-      setVerifyEmail(true);
+    onSuccess: (data) => {
+      if (data.status === 200) {
+        setVerifyEmail(true);
+      }
     },
   });
 
@@ -214,8 +216,8 @@ function Signup() {
                 onChange={onChangeEmailHandler}
                 value={email}
                 type='email'
-                placeholder='email@gamil.com'
-                pattern='[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.]+[a-zA-Z]+[.]*[a-zA-Z]*'
+                placeholder='email@gmail.com'
+                pattern='[a-zA-Z0-9]+(?:[.][a-zA-Z0-9]+)*[@][a-zA-Z0-9]+[.]+[a-zA-Z]+[.]*[a-zA-Z]*'
               />
 
               <CustomBtn

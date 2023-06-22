@@ -196,6 +196,7 @@ const ListBoxHeader = styled.div`
 
 const HeaderItem = styled.div`
   flex-basis: 25%;
+  text-align: center;
 `;
 
 const TestList = styled.div`
@@ -204,6 +205,7 @@ const TestList = styled.div`
   padding: 0px 70px;
   display: flex;
   align-items: center;
+  text-align: center;
 `;
 
 const ListItem = styled.div`

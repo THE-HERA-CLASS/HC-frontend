@@ -6,7 +6,7 @@ const majorGet = async () => {
     const response = await api.get(`/api/major`);
     return response.data.data;
   } catch (e) {
-    // console.log(e);
+    console.log(e);
   }
 };
 
@@ -26,7 +26,7 @@ const subjectGet = async () => {
     const response = await api.get(`/api/subject`);
     return response.data.data;
   } catch (e) {
-    // console.log(e.response.errMsg);
+    console.log(e.response.errMsg);
   }
 };
 
