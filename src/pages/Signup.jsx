@@ -145,7 +145,7 @@ function Signup() {
   //닉네임 중복 체크 핸들러
   const nicknameConfirmHandler = async () => {
     const response = await nicknameConfirmGet(nickname);
-    if (response.status === 200) {
+    if (response?.status === 200) {
       setExistsNickname(true);
     }
   };

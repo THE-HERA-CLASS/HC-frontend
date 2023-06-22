@@ -9,6 +9,7 @@ const loginPost = async (formData) => {
       return response;
     }
   } catch (e) {
+    console.log(e);
     if (e.response.status === 400) {
       alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
@@ -41,7 +42,7 @@ const signupPost = async (newUser) => {
   try {
     const response = await api.post(`/api/signup`, newUser);
     if (response.status === 200) {
-      alert(response.msg);
+      alert(`회원가입에 성공하였습니다.`);
     }
   } catch (e) {
     if (e.response.status === 400) {
@@ -97,7 +98,6 @@ const nicknameConfirmGet = async (nickName) => {
 const authMailPost = async (email) => {
   try {
     const response = await api.post(`/api/sendAuthMail`, email);
-    console.log(response);
     if (response.status === 200) {
       alert(`입력하신 이메일로 인증코드를 발송 하였습니다. 인증 코드를 입력해주세요`);
     }
