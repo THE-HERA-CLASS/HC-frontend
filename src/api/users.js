@@ -61,7 +61,10 @@ const emailConfirmGet = async (email) => {
     const response = await api.get(`/api/emailExists/${email}`);
 
     if (response.status === 200) {
-      alert(`사용 가능한 이메일입니다.`);
+      alert(`사용 가능한 이메일입니다.
+      `);
+      alert(`입력하신 이메일로 인증코드를 발송 하였습니다. 인증 코드를 입력해주세요.
+      코드 발송에는 다소 시간이 소요될 수 있습니다.`);
       return response;
     } else if (response.status === 201) {
       alert(`이미 사용중인 이메일입니다.`);
@@ -116,6 +119,7 @@ const verifyMailPost = async (verify) => {
     const response = await api.post(`/api/verifyMail`, verify);
     if (response.status === 200) {
       alert(response.data.msg);
+      return response;
     }
   } catch (e) {
     if (e.response.status === 400) {

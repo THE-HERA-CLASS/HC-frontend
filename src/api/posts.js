@@ -40,7 +40,6 @@ const getExamIdPost = async (formData) => {
 const examAllGet = async () => {
   try {
     const response = await api.get(`/api/exam`);
-    console.log(response.data.data);
     return response.data.data;
   } catch (e) {
     if (e.response.status === 400) {
@@ -55,7 +54,6 @@ const examAllGet = async () => {
 const certIdExamGet = async (certId) => {
   try {
     const response = await api.get(`/api/exam/certificate/${certId}`);
-    console.log(response.data.data);
     if (response.status === 200) {
       return response.data.data;
     }
