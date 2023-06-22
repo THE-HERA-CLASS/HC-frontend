@@ -136,7 +136,7 @@ function Signup() {
   //이메일 중복 체크 핸들러, 이후 통신이 성공적이면 바로 인증코드 발송
   const emailConfirmClick = async () => {
     const response = await emailConfirmGet(email);
-    if (response.status === 200) {
+    if (response?.status === 200) {
       //중복 체크 후 바로 인증코드 발송
       authEmaliMutation.mutate({ email });
     }
