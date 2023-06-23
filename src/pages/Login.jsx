@@ -81,10 +81,20 @@ function Login() {
           />
 
           <FindIdBox>
-            <CustomText fontSize='0.95rem' fontWeight='500' textDecoration='underline' cursor='pointer'>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              textDecoration='underline'
+              cursor='pointer'
+              onClick={() => alert(`이 서비스는 준비 중 입니다.`)}>
               아이디 찾기
             </CustomText>
-            <CustomText fontSize='0.95rem' fontWeight='500' textDecoration='underline' cursor='pointer'>
+            <CustomText
+              fontSize='0.95rem'
+              fontWeight='500'
+              textDecoration='underline'
+              cursor='pointer'
+              onClick={() => alert(`이 서비스는 준비 중 입니다.`)}>
               비밀번호 찾기
             </CustomText>
           </FindIdBox>
