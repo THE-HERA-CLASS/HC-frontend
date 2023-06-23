@@ -27,11 +27,11 @@ const getExamIdPost = async (formData) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     }
   }
 };
