@@ -11,11 +11,11 @@ const loginPost = async (formData) => {
   } catch (e) {
     console.log(e);
     if (e.response.status === 400) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 419) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     }
   }
 };
@@ -30,9 +30,9 @@ const LogoutDelete = async () => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 419) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     }
   }
 };
@@ -107,9 +107,9 @@ const authMailPost = async (email) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     }
   }
 };
@@ -124,9 +124,9 @@ const verifyMailPost = async (verify) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.data.errMsg);
+      alert(e.response.errMsg);
     }
   }
 };
