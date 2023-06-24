@@ -80,13 +80,12 @@ function Signup() {
 
   //비밀번호 이벤트 핸들러
   const onChangePasswordHandler = (e) => {
-    //비밀번호 정규표현식
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-Z\d@$!%*?&]{8,15}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-Z\d@$!%*?&]{8,15}$/;
     const passwordCurrent = e.target.value;
     setPassword(passwordCurrent);
 
     if (!passwordRegex.test(passwordCurrent)) {
-      setPasswordMsg('영문 대소문자, 숫자, 특수문자를 사용한 최소 8글자 최대 15글자를 입력해주세요.');
+      setPasswordMsg('비밀번호는 영문 대문자, 소문자, 숫자, 특수문자를 모두 포함한 8~15자여야 합니다.');
       setIsPassword(false);
     } else {
       setPasswordMsg('올바른 비밀번호 형식입니다.');
@@ -170,8 +169,10 @@ function Signup() {
 
   //회원가입 요청 뮤테이션
   const signupMutation = useMutation(signupPost, {
-    onSuccess: () => {
-      goLogin();
+    onSuccess: (res) => {
+      if (res.status === 200) {
+        goLogin();
+      }
     },
   });
 
