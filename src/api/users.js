@@ -4,7 +4,6 @@ import api from '../axios/api';
 const loginPost = async (formData) => {
   try {
     const response = await api.post(`/api/login`, formData);
-    console.log(response);
     if (response.status === 200) {
       alert(`로그인 되었습니다.`);
       return response;
@@ -42,7 +41,6 @@ const LogoutDelete = async () => {
 const signupPost = async (newUser) => {
   try {
     const response = await api.post(`/api/signup`, newUser);
-    console.log(response);
     if (response.status === 200) {
       alert(`회원가입에 성공하였습니다.`);
       return response;
