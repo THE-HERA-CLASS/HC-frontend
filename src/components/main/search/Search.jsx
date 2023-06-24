@@ -112,6 +112,7 @@ function Search() {
     </SelectBox>
   );
 }
+
 const SelectBox = styled.div`
   width: 788px;
   height: 72px;
@@ -129,7 +130,7 @@ const SelectBox = styled.div`
 `;
 
 const Select = styled.select`
-  padding-right: 20px;
+  padding-right: 35px;
   border: none;
   width: 170px;
   height: 72px;
@@ -138,8 +139,8 @@ const Select = styled.select`
   font-size: 20px;
   font-weight: 400;
 
+  text-overflow: ellipsis;
   text-align: center;
-
   background: url(${SearchDown}) no-repeat 95% 50%;
   border-radius: 0px;
   -webkit-appearance: none;
