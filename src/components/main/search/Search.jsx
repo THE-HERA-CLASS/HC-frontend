@@ -44,7 +44,7 @@ function Search() {
     },
   );
 
-  //selecor 핸들러
+  //select 핸들러
   const selectChangeHandler = (e) => {
     const { name, value } = e.target;
     setSelect({
@@ -54,7 +54,11 @@ function Search() {
   };
 
   const searchHandler = (subjectId) => {
-    navigate(`/test-list/subject/${subjectId}`);
+    if (select.major_id !== '' && select.certificate_id !== '' && select.subject_id !== '') {
+      navigate(`/test-list/subject/${subjectId}`);
+    } else {
+      alert(`각 항목을 모두 체크해주세요.`);
+    }
   };
   return (
     <SelectBox>
@@ -112,6 +116,7 @@ function Search() {
     </SelectBox>
   );
 }
+
 const SelectBox = styled.div`
   width: 788px;
   height: 72px;
@@ -129,7 +134,7 @@ const SelectBox = styled.div`
 `;
 
 const Select = styled.select`
-  padding-right: 20px;
+  padding-right: 35px;
   border: none;
   width: 170px;
   height: 72px;
@@ -138,8 +143,8 @@ const Select = styled.select`
   font-size: 20px;
   font-weight: 400;
 
+  text-overflow: ellipsis;
   text-align: center;
-
   background: url(${SearchDown}) no-repeat 95% 50%;
   border-radius: 0px;
   -webkit-appearance: none;
