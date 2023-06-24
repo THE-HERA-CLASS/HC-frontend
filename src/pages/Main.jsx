@@ -38,13 +38,26 @@ function Main() {
       <TopBox>
         <ExplainBox>
           <TextContainer>
-            <CustomText fontSize='35px' fontWeight='700' fontFamily='Inter'>
-              맞춤형 자격증 준비 서비스
-            </CustomText>
+            {cookie ? (
+              <>
+                <CustomText fontSize='35px' fontWeight='700' fontFamily='Inter'>
+                  원하는 시험지를
+                </CustomText>
+                <CustomText fontSize='35px' fontWeight='700' fontFamily='Inter'>
+                  검색하여 풀어보세요!
+                </CustomText>
+              </>
+            ) : (
+              <>
+                <CustomText fontSize='35px' fontWeight='700' fontFamily='Inter'>
+                  맞춤형 자격증 준비 서비스
+                </CustomText>
 
-            <CustomText fontSize='30px' fontWeight='600' fontFamily='Inter' margin='0 0 29px 0'>
-              로그인하고 이용해보세요!
-            </CustomText>
+                <CustomText fontSize='30px' fontWeight='600' fontFamily='Inter' margin='0 0 29px 0'>
+                  로그인하고 이용해보세요!
+                </CustomText>
+              </>
+            )}
 
             {cookie ? null : (
               <ButtonBox>
