@@ -10,8 +10,9 @@ function Footer() {
         <LogoBox>
           <Img src={logo} />
           <CustomText fontWeight='700' fontSize='1rem'>
-            | Fe: <a href='https://github.com/THE-HERA-CLASS/HC-frontend'>Github</a> | Be:
-            <a href='https://github.com/THE-HERA-CLASS/HC-backend'>Github</a> | 프로젝트소개서
+            | Fe: <a href='https://github.com/THE-HERA-CLASS/HC-frontend'>Github</a> | Be:{' '}
+            <a href='https://github.com/THE-HERA-CLASS/HC-backend'>Github</a> |{' '}
+            <a href='https://teamsparta.notion.site/99-14-34184f2fff0b4e38b4fee3239f7d4c6f'>프로젝트소개서</a>
           </CustomText>
         </LogoBox>
 
