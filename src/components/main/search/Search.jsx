@@ -44,7 +44,7 @@ function Search() {
     },
   );
 
-  //selecor 핸들러
+  //select 핸들러
   const selectChangeHandler = (e) => {
     const { name, value } = e.target;
     setSelect({
@@ -54,7 +54,11 @@ function Search() {
   };
 
   const searchHandler = (subjectId) => {
-    navigate(`/test-list/subject/${subjectId}`);
+    if (select.major_id !== '' && select.certificate_id !== '' && select.subject_id !== '') {
+      navigate(`/test-list/subject/${subjectId}`);
+    } else {
+      alert(`각 항목을 모두 체크해주세요.`);
+    }
   };
   return (
     <SelectBox>
