@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import CustomText from '../components/common/CustomText';
 import CustomBtn from '../components/common/CustomBtn';
+import jwtDecode from 'jwt-decode';
+import Cookies from 'js-cookie';
 function Login() {
   const navigate = useNavigate();
 
@@ -37,6 +39,9 @@ function Login() {
   const loginMutation = useMutation(loginPost, {
     onSuccess: (res) => {
       if (res.status === 200) {
+        const cookie = Cookies.get('accessToken');
+        const userInfo = jwtDecode(cookie);
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
         goHome();
       }
     },
