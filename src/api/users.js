@@ -4,6 +4,7 @@ import api from '../axios/api';
 const loginPost = async (formData) => {
   try {
     const response = await api.post(`/api/login`, formData);
+    console.log(response);
     if (response.status === 200) {
       alert(`로그인 되었습니다.`);
       return response;
@@ -11,11 +12,11 @@ const loginPost = async (formData) => {
   } catch (e) {
     console.log(e);
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 419) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
@@ -30,9 +31,9 @@ const LogoutDelete = async () => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 419) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
@@ -41,16 +42,19 @@ const LogoutDelete = async () => {
 const signupPost = async (newUser) => {
   try {
     const response = await api.post(`/api/signup`, newUser);
+    console.log(response);
     if (response.status === 200) {
       alert(`회원가입에 성공하였습니다.`);
+      return response;
     }
   } catch (e) {
+    console.log(e);
     if (e.response.status === 400) {
       alert('예상치 못 한 오류가 발생하였습니다.');
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 412) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
@@ -107,9 +111,9 @@ const authMailPost = async (email) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
@@ -124,9 +128,9 @@ const verifyMailPost = async (verify) => {
     }
   } catch (e) {
     if (e.response.status === 400) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     } else if (e.response.status === 411) {
-      alert(e.response.errMsg);
+      alert(e.response.data.errMsg);
     }
   }
 };
