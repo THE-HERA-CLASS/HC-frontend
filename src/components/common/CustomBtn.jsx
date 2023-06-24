@@ -48,7 +48,7 @@ const ButtonStyled = styled.button`
     disabled
       ? css`
           pointer-events: none;
-          background-color: aliceblue;
+          opacity: 0.1;
         `
       : ''}
   ${({ border }) =>

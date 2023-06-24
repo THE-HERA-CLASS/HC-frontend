@@ -33,6 +33,7 @@ function Signup() {
   const [isPassword, setIsPassword] = useState(false);
   const [isConfirmPw, setIsConfirmPw] = useState(false);
   const [isMajor, setIsMajor] = useState(false);
+  const [isVerifyCode, setIsVerifyCode] = useState(false);
 
   //중복검사 스테이트
   const [existsEmail, setExistsEmail] = useState(false);
@@ -122,7 +123,14 @@ function Signup() {
 
   //인증코드 이벤트 핸들러
   const onChangeVerifyCodeHandler = (e) => {
-    setVerifyCode(e.target.value);
+    const verifyCodeCurrent = e.target.value;
+    setVerifyCode(verifyCodeCurrent);
+
+    if (verifyCodeCurrent.length === 6) {
+      setIsVerifyCode(true);
+    } else {
+      setIsVerifyCode(false);
+    }
   };
 
   // 인증 코드 발송 뮤테이션
@@ -227,7 +235,8 @@ function Signup() {
                 height='60px'
                 bc='#282897'
                 _borderradius='10px'
-                onClick={emailConfirmClick}>
+                onClick={emailConfirmClick}
+                disabled={!isEmail}>
                 <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
                   중복확인
                 </CustomText>
@@ -253,7 +262,8 @@ function Signup() {
                 height='60px'
                 bc='#282897'
                 _borderradius='10px'
-                onClick={verifyMailClick}>
+                onClick={verifyMailClick}
+                disabled={!isVerifyCode}>
                 <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
                   인증하기
                 </CustomText>
@@ -307,7 +317,8 @@ function Signup() {
                 height='60px'
                 bc='#282897'
                 _borderradius='10px'
-                onClick={nicknameConfirmHandler}>
+                onClick={nicknameConfirmHandler}
+                disabled={!isNickname}>
                 <CustomText color='#fff' fontSize='1.2rem' fontWeight='600'>
                   중복확인
                 </CustomText>
