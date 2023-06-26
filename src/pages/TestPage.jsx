@@ -7,36 +7,96 @@ import ResultModal from "../components/testpage/ResultModal";
 import Cookies from "js-cookie";
 import checkO from "../Img/TestPage/check-O.png";
 import checkX from "../Img/TestPage/check-X.png";
+import ReactHtmlParser, { convertNodeToElement } from "react-html-parser";
+import { ReactComponent as ExitIcon } from "../Img/TestPage/ExitIcon.svg";
+import CustomBtn from "../components/common/CustomBtn";
+import CustomText from "../components/common/CustomText";
 
 // 문제 카드 컴포넌트를 정의. 각 문제를 보여주는 역할.
-const QuestionCard = ({ questionData, showExplanation, showAnswer, markingImage }) => {
+const QuestionCard = ({
+  questionData,
+  showExplanation,
+  showAnswer,
+  markingImage,
+  selected,
+  setSelected,
+  questionIndex,
+}) => {
   const optionChar = ["①", "②", "③", "④"];
   const correctAnswer = optionChar[questionData.correct - 1];
+  const [selectedChoice, setSelectedChoice] = React.useState(null);
+  const ref = React.useRef(null);
+
+  const handleChoiceClick = (choiceIndex) => {
+    console.log("Choice clicked: ", choiceIndex);
+    const newSelected = [...selected];
+    newSelected[questionIndex] = choiceIndex;
+    setSelected(newSelected);
+  };
+
+  const transform = (node, index) => {
+    if (node.type === "tag" && node.name === "img") {
+      return (
+        <>
+          <br />
+          {convertNodeToElement(node, index)}
+        </>
+      ); // '<br />' 태그를 이미지 앞에 추가
+    }
+  };
 
   return (
-      <QuestionCardWrapper>
-      {showAnswer && <MarkingImage src={markingImage} alt="Marking Result" style={{top: "-40px", left: "-40px"}}/>}
+    <QuestionCardWrapper ref={ref}>
+      {showAnswer && (
+        <MarkingImage
+          src={markingImage}
+          alt="Marking Result"
+          style={{ top: "-40px", left: "-40px" }}
+        />
+      )}
       <p>
-        {questionData.question_num}. {questionData.question}
+        <strong>
+          {questionData.question_num}.{" "}
+          {ReactHtmlParser(questionData.question, { transform })}{" "}
+        </strong>
       </p>
       {questionData.example &&
         questionData.example.map((item, index) => (
-          <div key={index}>
-            <p>{item.value}</p>
-          </div>
+          <ExampleBox key={index}>
+            {item.value.split("\n").map((line, i) => (
+              <p key={i}>{ReactHtmlParser(line, { transform })}</p>
+            ))}
+          </ExampleBox>
         ))}
       {questionData.choice.map((item, index) => (
-        <div key={index}>
+        <Choice
+          key={index}
+          onClick={() => handleChoiceClick(index)}
+          selected={selected[questionIndex] === index}
+        >
           <p>
             {optionChar[index]} {item.value}
           </p>
-        </div>
+        </Choice>
       ))}
-      {showAnswer && <p>정답: {questionData.answer}</p>}
+      {showAnswer && (
+        <p style={{ color: "red", fontWeight: "bold" }}>
+          정답: {questionData.answer}
+        </p>
+      )}
       {/* showAnswer가 true일 때만 정답을 보여줌. */}
-      {showExplanation && <SolveText>{questionData.solve}</SolveText>}
+      {showExplanation && (
+        <SolveText>
+          <p style={{ color: "blue" }}>해설</p>
+          {questionData.solve.split("\n").map((line, i) => (
+            <p key={i} style={{ color: "blue" }}>
+              {ReactHtmlParser(line, { transform })}
+            </p>
+          ))}
+        </SolveText>
+      )}
       {/* showExplanation이 true일 때만 풀이를 보여줌. */}
-      </QuestionCardWrapper>
+    </QuestionCardWrapper>
   );
 };
 
@@ -85,8 +145,6 @@ const AnswerChoices = ({ numbers, selected, setSelected }) => {
 
 // 테스트 페이지 컴포넌트를 정의
 function TestPage() {
-  const [zoom, setZoom] = useState(100);
-  const [viewStyle, setViewStyle] = useState("scroll");
   const [testContent, setTestContent] = useState(null);
   const [selected, setSelected] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -94,11 +152,52 @@ function TestPage() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [markingImages, setMarkingImages] = useState([]);
+  const leftColumnRef = React.useRef();
+  const rightColumnRef = React.useRef();
+  const pageRef = React.useRef();
 
   const { id } = useParams();
 
   const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
+
+  const [time, setTime] = useState(30 * 60);
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    let interval = null;
+
+    if (isActive) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (!isActive && time !== 0) {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [isActive, time]);
+
+  const startTimer = () => {
+    setIsActive(true);
+  };
+
+  const pauseTimer = () => {
+    setIsActive(false);
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleExit = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     console.log("submitResult has been updated", submitResult);
@@ -106,6 +205,7 @@ function TestPage() {
 
   // 페이지가 로드되면 서버에서 문제 데이터 가져오기
   useEffect(() => {
+    console.log("useEffect was called");
     const fetchData = async () => {
       try {
         if (!accessToken) {
@@ -153,6 +253,7 @@ function TestPage() {
 
       // marking 값을 확인하여 이미지 렌더링
       for (let i = 0; i < data.length; i++) {
+        console.log(`Marking value for question ${i}: ${data[i].marking}`); // 출력 추가
         if (data[i].marking) {
           markingImages.push(checkO);
         } else {
@@ -170,6 +271,12 @@ function TestPage() {
   const handleSubmit = () => {
     console.log("handleSubmit function is called");
     console.log(selected);
+
+    // 선택한 답안 중 null 값이 있는지 확인
+    if (selected.some((choice) => choice === null)) {
+      alert("아직 풀지 않은 문제가 있습니다!");
+      return; // 함수를 더 이상 진행하지 않고 종료
+    }
 
     const data = selected.map((answerIndex, questionIndex) => ({
       question_id: testContent[questionIndex].question_id,
@@ -204,27 +311,44 @@ function TestPage() {
 
   return (
     <>
-      {/* <Toolbar> */}
-
-      {/* <div>
-          View Style:
-          <button onClick={() => setViewStyle("scroll")}>Scroll</button>
-          <button onClick={() => setViewStyle("pagination")}>Pagination</button>
-          <div>Current View Style: {viewStyle}</div>
-        </div> */}
-
-      {/* <button>Bookmark</button>
-        <button>Increase Text Size</button>
-        <button>Exit</button> */}
-      {/* </Toolbar> */}
+      <Toolbar>
+        <div>
+          <StyledButton onClick={handleExit}>
+            <StyledExitIcon />
+            <ButtonText>나가기</ButtonText>
+          </StyledButton>
+        </div>
+        <TimerWrapper>
+          <TimeDisplay>
+          <strong><p>제한시간: 30:00</p></strong>
+          <ButtonText1>남은시간: {formatTime(time)}</ButtonText1>
+          </TimeDisplay>
+          <CustomBtn
+            width="82px"
+            height="38px"
+            bc="#282897"
+            _borderradius="4px"
+            onClick={!isActive ? startTimer : pauseTimer}
+          >
+            <CustomText
+              fontSize="15px"
+              fontWeight="500"
+              fontFamily="Inter"
+              color="#fff"
+            >
+              {!isActive ? "Start" : "Pause"}
+            </CustomText>
+          </CustomBtn>
+        </TimerWrapper>
+      </Toolbar>
 
       <TestArea>
-        <TestPageArea>
+        <TestPageArea ref={pageRef}>
           {testContent ? (
-            <div style={{ display: "flex" }}>
-              <Column>
+            <div style={{ display: "flex", position: "relative" }}>
+              <Column ref={leftColumnRef}>
                 {testContent
-                  .filter((_, index) => index % 2 === 0)
+                  .slice(0, Math.ceil(testContent.length / 2))
                   .map((item, index) => (
                     <QuestionCard
                       key={index}
@@ -232,19 +356,27 @@ function TestPage() {
                       showExplanation={showExplanation}
                       showAnswer={showAnswer}
                       markingImage={markingImages[index]}
+                      selected={selected}
+                      setSelected={setSelected}
+                      questionIndex={index}
                     />
                   ))}
               </Column>
-              <Column>
+              <Column ref={rightColumnRef}>
                 {testContent
-                  .filter((_, index) => index % 2 !== 0)
+                  .slice(Math.ceil(testContent.length / 2))
                   .map((item, index) => (
                     <QuestionCard
                       key={index}
                       questionData={item}
                       showExplanation={showExplanation}
                       showAnswer={showAnswer}
-                      markingImage={markingImages[index]}
+                      markingImage={
+                        markingImages[Math.ceil(testContent.length / 2) + index]
+                      }
+                      selected={selected}
+                      setSelected={setSelected}
+                      questionIndex={Math.ceil(testContent.length / 2) + index}
                     />
                   ))}
               </Column>
@@ -254,7 +386,6 @@ function TestPage() {
           )}
         </TestPageArea>
       </TestArea>
-
       <AnswerArea>
         <AnswerHeader>
           <AnswerHeaderText>답안 표기란</AnswerHeaderText>
@@ -274,7 +405,6 @@ function TestPage() {
           "Loading..."
         )}
       </AnswerArea>
-
       <BottomBar>
         <SubmitButton onClick={handleSubmit}>제출하기</SubmitButton>
       </BottomBar>
@@ -313,17 +443,73 @@ const Toolbar = styled.div`
   top: 100px;
   background: #f8faff;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 72px;
+`;
+
+const TimerWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-right: 200px;
+`;
+
+const TimeDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: -20px;
+`;
+
+const StyledExitIcon = styled(ExitIcon)`
+  width: 36px;
+  height: 36px;
+  transform: rotate(-0deg);
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+`;
+
+const StyledButton = styled.button`
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
+const ButtonText = styled.span`
+  margin-top: 5px; // Adjust this to bring the text closer
+  font-weight: bold;
+`;
+
+const ButtonText1 = styled.span`
+  margin-top: -12px; // Adjust this to bring the text closer
+  font-weight: bold;
+`;
+
+const ExampleBox = styled.div`
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+`;
+
+const Choice = styled.div`
+  cursor: pointer;
+  font-weight: ${(props) => (props.selected ? "bold" : "normal")};
+`;
+
 const TestArea = styled.div`
+  display: flex;
   position: absolute;
   width: 1560px;
   height: 732px;
   left: 0px;
   top: 224px;
   background: #f8faff;
+  align-items: stretch;
 `;
 
 const Column = styled.div`
@@ -332,31 +518,19 @@ const Column = styled.div`
   margin-right: 50px; // 필요하다면 오른쪽 마진을 추가
   margin-left: 50px;
   margin-top: 50px;
+  height: 100%;
   &:first-child {
     padding-right: 50px;
   }
   &:last-child {
     margin-right: 50; // 마지막 column은 오른쪽 마진 없음
   }
-  &::after {
-    content: "";
-    position: absolute;
-    height: calc(520% + 50px);
-    width: 1px;
-    right: 0;
-    top: 0px;
-    background-color: rgba(137, 137, 137, 1);
-  }
-
-  &:last-child::after {
-    content: none;
-  }
 `;
 
 const TestPageArea = styled.div`
   position: absolute;
   width: 1416px;
-  height: 732px;
+  height: 732px; // TestPageArea의 높이를 명시적으로 설정합니다.
   left: 72px;
   top: 0px;
   background: #ffffff;
