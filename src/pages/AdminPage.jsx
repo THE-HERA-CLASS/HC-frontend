@@ -29,11 +29,12 @@ function AdminPage() {
 
   return (
     <AdminLayout>
-      <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={goParsingEditor}>
+      {/* 아직 미완성 */}
+      {/* <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={goParsingEditor}>
         <CustomText fontSize='2.5rem' fontWeight='700' color='#fff'>
           에디터로 등록
         </CustomText>
-      </CustomBtn>
+      </CustomBtn> */}
       <CustomBtn width='500px' height='200px' _borderradius='10px' bc='#282897' onClick={openModalHandler}>
         <CustomText fontSize='2.5rem' fontWeight='700' color='#fff'>
           파일로 등록
