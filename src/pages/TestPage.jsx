@@ -63,9 +63,15 @@ const QuestionCard = ({
       {questionData.example &&
         questionData.example.map((item, index) => (
           <ExampleBox key={index}>
-            {item.value.split("\n").map((line, i) => (
-              <p key={i}>{ReactHtmlParser(line, { transform })}</p>
-            ))}
+            {item.type === "image" ? (
+              <img src={item.value} alt={`example-${index}`} />
+            ) : (
+              item.value
+                .split("\n")
+                .map((line, i) => (
+                  <p key={i}>{ReactHtmlParser(line, { transform })}</p>
+                ))
+            )}
           </ExampleBox>
         ))}
       {questionData.choice.map((item, index) => (
@@ -320,8 +326,10 @@ function TestPage() {
         </div>
         <TimerWrapper>
           <TimeDisplay>
-          <strong><p>제한시간: 30:00</p></strong>
-          <ButtonText1>남은시간: {formatTime(time)}</ButtonText1>
+            <strong>
+              <p>제한시간: 30:00</p>
+            </strong>
+            <ButtonText1>남은시간: {formatTime(time)}</ButtonText1>
           </TimeDisplay>
           <CustomBtn
             width="82px"
