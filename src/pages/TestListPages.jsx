@@ -16,8 +16,7 @@ function TestListPages() {
   const { data: certExams } = useQuery(['examcertget', certificateId], () => certIdExamGet(certificateId), {
     // 자격증 ID가 있을 경우에만 가져옴
     enabled: certificateId ? true : false,
-    // 5분 동안 캐싱 처리
-    cacheTime: 300 * 1000,
+
     // 데이터를 가져온 후 실행될 로직 추가
     onSuccess: () => {
       queryClient.removeQueries('examallget');
@@ -28,7 +27,7 @@ function TestListPages() {
   // 헤더의 기출문제 클릭으로 들어왔을 때 모든 문제를 보여주는 함수
   const { data: allExams } = useQuery('examallget', examAllGet, {
     enabled: certificateId === undefined && subjectId === undefined, // certificateId와 subjectId가 모두 undefined일 때만 실행
-    cacheTime: 300 * 1000, // 5분 동안 캐싱 처리
+
     // 데이터를 가져온 후 실행될 로직 추가
     onSuccess: () => {
       queryClient.removeQueries(['examcertget', certificateId]);
@@ -40,8 +39,7 @@ function TestListPages() {
   const { data: subExams } = useQuery(['examsubget', subjectId], () => subIdExamGet(subjectId), {
     // 과목 ID가 있을 경우에만 가져옴
     enabled: subjectId ? true : false,
-    // 5분 동안 캐싱 처리
-    cacheTime: 300 * 1000,
+
     // 데이터를 가져온 후 실행될 로직 추가
     onSuccess: () => {
       queryClient.removeQueries(['examcertget', certificateId]);

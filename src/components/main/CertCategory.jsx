@@ -20,8 +20,6 @@ function CertCategory() {
     () => matchingCertGet(selectedMajorId),
     {
       enabled: selectedMajorId !== '',
-      //5분 동안 캐싱처리
-      cacheTime: 300 * 1000,
     },
   );
 
